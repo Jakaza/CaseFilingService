@@ -121,31 +121,35 @@ const ReportCasePage = () => {
     <div className="min-h-screen bg-gray-100 mainContainer">
       <header className="bg-blue-800 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <div>
-            <img src="./../../assets/saps_banner-removebg-preview.png" alt="" />
-            <h1 className="text-2xl font-bold">
-              <Link to="/">Police Department</Link>
+          <div className="flex items-center">
+            <img
+              src="/saps_banner-removebg-preview.png"
+              alt="SAPS Logo"
+              className="h-12 mr-4"
+            />
+            <h1 className="text-2xl font-bold text-yellow-400">
+              <Link to="/">SAPS DEPARTMENT</Link>
             </h1>
           </div>
           <nav>
             <ul className="flex space-x-4">
               <li>
-                <Link to="/" className="hover:text-blue-200">
+                <Link to="/" className="hover:text-yellow-300">
                   Home
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-200">
+                <a href="#" className="hover:text-yellow-300">
                   Services
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-200">
+                <a href="#" className="hover:text-yellow-300">
                   Contact
                 </a>
               </li>
               <li>
-                <Link to="login" className="hover:text-blue-200">
+                <Link to="/login" className="hover:text-yellow-300">
                   Sign In
                 </Link>
               </li>

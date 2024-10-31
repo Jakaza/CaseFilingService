@@ -30,32 +30,35 @@ function homePage() {
     <div className="min-h-screen bg-gray-100 mainContainer">
       <header className="bg-blue-800 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <div>
-            <img src="./../../assets/saps_banner-removebg-preview.png" alt="" />
-            <h1 className="text-2xl font-bold">
-              <Link to="/">Police Department</Link>
+          <div className="flex items-center">
+            <img
+              src="/saps_banner-removebg-preview.png"
+              alt="SAPS Logo"
+              className="h-12 mr-4"
+            />
+            <h1 className="text-2xl font-bold text-yellow-400">
+              <Link to="/">SAPS DEPARTMENT</Link>
             </h1>
           </div>
           <nav>
             <ul className="flex space-x-4">
               <li>
-                <Link to="/" className="hover:text-blue-200">
+                <Link to="/" className="hover:text-yellow-300">
                   Home
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-200">
+                <a href="#" className="hover:text-yellow-300">
                   Services
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-200">
+                <a href="#" className="hover:text-yellow-300">
                   Contact
                 </a>
               </li>
               <li>
-                {" "}
-                <Link to="login" className="hover:text-blue-200">
+                <Link to="/login" className="hover:text-yellow-300">
                   Sign In
                 </Link>
               </li>
@@ -72,10 +75,24 @@ function homePage() {
           <p className="text-xl text-gray-700 mb-8">
             Report incidents, file complaints, and track your cases online.
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white text-lg">
-            <Link to="open-case">Open a New Case</Link>
-            <FaChevronRight className="inline-block ml-2 h-4 w-4" />
-          </Button>
+          <div className="flex flex-col space-y-4 items-center">
+            <Button className="bg-blue-600 text-yellow-200 hover:bg-blue-700 text-white text-lg max-w-xs">
+              <Link to="open-case" className="flex items-center justify-center">
+                Open a New Case
+                <FaChevronRight className="inline-block ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+
+            <Button className="bg-yellow-400 text-white hover:bg-yellow-200 text-lg max-w-xs">
+              <Link
+                to="track-case"
+                className="flex items-center justify-center"
+              >
+                Track Your Case
+                <FaChevronRight className="inline-block ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
         </section>
 
         <section className="grid md:grid-cols-3 gap-6 mb-12">
@@ -109,8 +126,8 @@ function homePage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              For emergencies, always call 911. For non-emergencies, call (555)
-              123-4567.
+              For emergencies, always call 10 111. For non-emergencies, call
+              012-7301319.
             </CardContent>
           </Card>
         </section>
@@ -133,7 +150,7 @@ function homePage() {
             &copy; {new Date().getFullYear()} City Police Department. All rights
             reserved.
           </p>
-          <p className="mt-2">For emergencies, always dial 911</p>
+          <p className="mt-2">For emergencies, always dial 10 111</p>
         </div>
       </footer>
     </div>
