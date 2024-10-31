@@ -32,14 +32,16 @@ function homePage() {
         <div className="container mx-auto flex justify-between items-center">
           <div>
             <img src="./../../assets/saps_banner-removebg-preview.png" alt="" />
-            <h1 className="text-2xl font-bold">Police Department</h1>
+            <h1 className="text-2xl font-bold">
+              <Link to="/">Police Department</Link>
+            </h1>
           </div>
           <nav>
             <ul className="flex space-x-4">
               <li>
-                <a href="#" className="hover:text-blue-200">
+                <Link to="/" className="hover:text-blue-200">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="hover:text-blue-200">
