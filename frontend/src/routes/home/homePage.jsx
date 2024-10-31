@@ -53,14 +53,9 @@ function homePage() {
               </li>
               <li>
                 {" "}
-                <Link to="register" className="hover:text-blue-200">
-                  Register
+                <Link to="login" className="hover:text-blue-200">
+                  Sign In
                 </Link>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-200">
-                  Login
-                </a>
               </li>
             </ul>
           </nav>

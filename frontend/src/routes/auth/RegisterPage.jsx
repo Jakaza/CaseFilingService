@@ -36,24 +36,6 @@ const InputField = ({
   </div>
 );
 
-const Button = ({ children, className, ...props }) => (
-  <button className={`px-4 py-2 rounded font-semibold ${className}`} {...props}>
-    {children}
-  </button>
-);
-
-const Card = ({ children }) => (
-  <div className="bg-white p-6 rounded-lg shadow-md">{children}</div>
-);
-
-const CardHeader = ({ children }) => <div className="mb-4">{children}</div>;
-
-const CardTitle = ({ children, className }) => (
-  <h3 className={`text-xl font-semibold ${className}`}>{children}</h3>
-);
-
-const CardContent = ({ children }) => <div>{children}</div>;
-
 function RegisterPage() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -206,9 +188,9 @@ function RegisterPage() {
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <FaEyeSlash className="h-6 w-6 text-gray-700" />
-                ) : (
                   <FaEye className="h-6 w-6 text-gray-700" />
+                ) : (
+                  <FaEyeSlash className="h-6 w-6 text-gray-700" />
                 )}
               </button>
             </div>
@@ -239,7 +221,7 @@ function RegisterPage() {
               </button>
               <p className="text-center mt-2">
                 {" "}
-                Already have a profile?{" "}
+                Already have a account?{" "}
                 <Link className="text-blue-400" to="/login">
                   {" "}
                   Sign in
