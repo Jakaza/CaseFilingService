@@ -6,6 +6,7 @@ import "./App.css";
 import HomePage from "./routes/home/homePage";
 import RegisterPage from "./routes/auth/registerPage";
 import LoginPage from "./routes/auth/LoginPage";
+import ReportCasePage from "./routes/case/ReportCasePage";
 
 function App() {
   const router = createBrowserRouter([
@@ -20,6 +21,10 @@ function App() {
     {
       path: "/login",
       element: <LoginPage />,
+    },
+    {
+      path: "/open-case",
+      element: <ReportCasePage />,
     },
     // {
     //   path: "/",

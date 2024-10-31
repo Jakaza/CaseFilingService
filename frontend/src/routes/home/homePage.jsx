@@ -71,7 +71,7 @@ function homePage() {
             Report incidents, file complaints, and track your cases online.
           </p>
           <Button className="bg-blue-600 hover:bg-blue-700 text-white text-lg">
-            Open a New Case
+            <Link to="open-case">Open a New Case</Link>
             <FaChevronRight className="inline-block ml-2 h-4 w-4" />
           </Button>
         </section>
