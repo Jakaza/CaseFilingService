@@ -368,7 +368,7 @@ const ReportCasePage = () => {
               rows={6}
               value={caseDetails}
               onChange={(e) => setCaseDetails(e.target.value)}
-              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
+              className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
               placeholder="Please describe the incident in detail..."
             />
           </Modal>
