@@ -28,6 +28,16 @@ const Modal = ({ isOpen, onClose, children }) => {
       <div className="relative top-20 mx-auto p-5 border h-3/4 w-5/6 shadow-lg rounded-md bg-white">
         <div className="mt-3 text-center">
           {children}
+
+          {/* {caseDetails && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Case Details
+              </label>
+              <p className="text-sm text-gray-600">{caseDetails}</p>
+            </div>
+          )} */}
+
           <div className="items-center flex px-4 py-3">
             <button
               onClick={onClose}
@@ -40,7 +50,7 @@ const Modal = ({ isOpen, onClose, children }) => {
               onClick={onClose}
               className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
-              Close
+              Cancel
             </button>
           </div>
         </div>
@@ -113,14 +123,16 @@ const ReportCasePage = () => {
         <div className="container mx-auto flex justify-between items-center">
           <div>
             <img src="./../../assets/saps_banner-removebg-preview.png" alt="" />
-            <h1 className="text-2xl font-bold">Police Department</h1>
+            <h1 className="text-2xl font-bold">
+              <Link to="/">Police Department</Link>
+            </h1>
           </div>
           <nav>
             <ul className="flex space-x-4">
               <li>
-                <a href="#" className="hover:text-blue-200">
+                <Link to="/" className="hover:text-blue-200">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="hover:text-blue-200">
@@ -315,15 +327,6 @@ const ReportCasePage = () => {
                   ))}
                 </select>
               </div>
-
-              {caseDetails && (
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Case Details
-                  </label>
-                  <p className="text-sm text-gray-600">{caseDetails}</p>
-                </div>
-              )}
 
               <div className="mt-6">
                 <button
