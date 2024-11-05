@@ -5,11 +5,12 @@ import {
   FaKeyboard as Keyboard,
   FaChevronDown as ChevronDown,
 } from "react-icons/fa";
+import { useReactMediaRecorder } from "react-media-recorder";
 
 // Sample police stations data
 import { policeStationsData } from "./../../lib/policeStationsData.js";
 
-const Modal = ({ isOpen, onClose, children }) => {
+const Modal = ({ isOpen , onSave ,  onClose, children }) => {
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) onClose();
@@ -40,7 +41,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 
           <div className="items-center flex px-4 py-3">
             <button
-              onClick={onClose}
+             onClick={onSave}
               className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               Save
@@ -87,6 +88,25 @@ const ReportCasePage = () => {
     "Domestic Violence",
     "Other",
   ];
+
+  const { startRecording, stopRecording, mediaBlobUrl, status } = useReactMediaRecorder({
+    audio: true,
+  });
+
+  const handleSave = () => {
+
+    if(reportMethod === "typing"){
+      console.log("Saving Text Statement To Database....");
+      
+    }else if(reportMethod === "voice"){
+      console.log("Saving Voice Statement To Database....");
+
+      
+    }
+
+    console.log("Something Went Wrong.");
+    
+  };
 
   const handleVoiceRecord = () => {
     setIsRecording(!isRecording);
@@ -343,29 +363,27 @@ const ReportCasePage = () => {
             </form>
           </div>
 
-          <Modal
-            isOpen={isModalOpen && reportMethod === "voice"}
-            onClose={() => setIsModalOpen(false)}
-          >
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-              Voice Recording
-            </h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Please speak clearly to record your case details.
-            </p>
-            <button
-              onClick={handleVoiceRecord}
-              className={`w-full flex items-center justify-center px-4 py-2 border rounded-md ${
-                isRecording ? "bg-red-500 text-white" : "bg-blue-500 text-white"
-              }`}
-            >
-              <Mic className="mr-2" />
-              {isRecording ? "Stop Recording" : "Start Recording"}
-            </button>
-          </Modal>
+          <Modal isOpen={isModalOpen && reportMethod === "voice"}  onSave={handleSave} onClose={() => setIsModalOpen(false)}>
+                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Voice Recording</h3>
+                <p className="text-sm text-gray-500 mb-4">Please speak clearly to record your case details.</p>
+                <button
+                  onClick={status === "recording" ? stopRecording : startRecording}
+                  className={`w-full flex items-center justify-center px-4 py-2 border rounded-md ${
+                    status === "recording" ? "bg-red-500 text-white" : "bg-blue-500 text-white"
+                  }`}
+                >
+                  <Mic className="mr-2" />
+                  {status === "recording" ? "Stop Recording" : "Start Recording"}
+                </button>
+                {mediaBlobUrl && (
+                  <div className="mt-4">
+                    <audio src={mediaBlobUrl} controls className="w-full" />
+                  </div>
+                )}
+              </Modal>
 
           <Modal
-            isOpen={isModalOpen && reportMethod === "typing"}
+            isOpen={isModalOpen && reportMethod === "typing"} onSave={handleSave}
             onClose={() => setIsModalOpen(false)}
           >
             <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
