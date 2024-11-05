@@ -8,6 +8,7 @@ import RegisterPage from "./routes/auth/registerPage";
 import LoginPage from "./routes/auth/LoginPage";
 import ReportCasePage from "./routes/case/ReportCasePage";
 import TrackCasePage from "./routes/case/TrackCasePage";
+import PasswordResetPage from "./routes/auth/PasswordResetPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -30,6 +31,10 @@ function App() {
     {
       path: "/track-case",
       element: <TrackCasePage />,
+    },
+    {
+      path: "/password-reset",
+      element: <PasswordResetPage />,
     },
     // {
     //   path: "/",
