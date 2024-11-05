@@ -12,6 +12,16 @@ The SAPS Case Tracking System is a web application designed to facilitate the re
 - **Real-Time Updates**: Users receive timely updates about their cases, including assigned officers and next steps.
 - **Language Support**: Users can select their preferred language for reporting and tracking cases.
 
+## Interface ( Images )
+
+![Screenshot (1)](https://github.com/user-attachments/assets/1ad0eca0-6fb5-44d8-a907-979c05132647)
+![Screenshot (3)](https://github.com/user-attachments/assets/6acaad89-b768-4387-a754-0a82e2be07e5)
+![Screenshot (5)](https://github.com/user-attachments/assets/1b59338a-a152-4e6b-aee3-2b6f2bf2ec6a)
+![Screenshot (7)](https://github.com/user-attachments/assets/1eb14cad-d105-4133-8675-ad6c1cb3e0ad)
+![Screenshot (8)](https://github.com/user-attachments/assets/04c18124-0e1f-4401-b302-60a7983d9e8b)
+![Screenshot (9)](https://github.com/user-attachments/assets/06fbaaab-0152-484b-a94b-bb059fbfd824)
+
+
 ## Future Plans
 
 To enhance the functionality and usability of the application, the following features are planned for future releases:
