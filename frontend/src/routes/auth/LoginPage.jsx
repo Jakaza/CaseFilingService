@@ -139,7 +139,7 @@ function LoginPage() {
 
             <div>
               <p>
-                <Link to="password-reset" className="text-blue-400 ">
+                <Link to="/password-reset" className="text-blue-400 ">
                   Forgot password?
                 </Link>
               </p>
