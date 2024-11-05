@@ -12,3 +12,33 @@ html, body {
   main {
     flex: 1; /* This allows the main content to take up the remaining space */
   }
+
+  .scrollable-section {
+    max-height: 400px; /* Adjust height as needed */
+    overflow-y: auto;
+    padding-right: 1rem; /* Optional: Adds padding to prevent scrollbar from overlapping text */
+  }
+
+  .police-scroll-section::-webkit-scrollbar {
+    width: 2px;
+
+  }
+  
+  .police-scroll-section::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Scrollbar track background */
+  }
+  
+  .police-scroll-section::-webkit-scrollbar-thumb {
+    background-color: #c8c8c8; /* Scrollbar thumb color */
+    border-radius: 10px;
+  }
+  
+  .police-scroll-section::-webkit-scrollbar-thumb:hover {
+    background: #919191; /* Color on hover */
+  }
+  
+  /* For Firefox */
+  .police-scroll-section {
+    scrollbar-width: thin;
+    scrollbar-color: #a6a6a6 #f1f1f1;
+  }
