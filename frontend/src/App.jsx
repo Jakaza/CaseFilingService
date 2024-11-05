@@ -9,6 +9,7 @@ import LoginPage from "./routes/auth/LoginPage";
 import ReportCasePage from "./routes/case/ReportCasePage";
 import TrackCasePage from "./routes/case/TrackCasePage";
 import PasswordResetPage from "./routes/auth/PasswordResetPage";
+import Dashboard from "./routes/admin/Dashboard";
 
 function App() {
   const router = createBrowserRouter([
@@ -35,6 +36,10 @@ function App() {
     {
       path: "/password-reset",
       element: <PasswordResetPage />,
+    },
+    {
+      path: "/admin",
+      element: <Dashboard />,
     },
     // {
     //   path: "/",
