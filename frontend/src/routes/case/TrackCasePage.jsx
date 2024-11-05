@@ -17,12 +17,12 @@ function TrackCasePage() {
       status: "In Progress",
       lastUpdate: "2023-05-15",
       description: "Theft of personal property",
-      assignedOfficer: "Officer J. Smith",
+      assignedOfficer: "Officer J. Maluleke",
       officerContact: {
         phone: "123-456-7890",
-        email: "officer.smith@saps.com",
+        email: "officer.jayMaluleka@saps.com",
       },
-      nextStep: "Witness interview scheduled for 2023-05-20",
+      nextStep: "Witness interview scheduled for 2024-11-20",
     },
     CASE002: {
       status: "Closed",
