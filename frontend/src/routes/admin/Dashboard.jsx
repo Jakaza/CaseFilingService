@@ -4,6 +4,7 @@ import "./dashboard.css"
 import { FaTachometerAlt , FaUserPlus , FaClipboardList , FaBars , FaSearch, FaBuilding ,FaMapMarkerAlt ,FaPhone, FaChevronDown, FaChevronRight  } from "react-icons/fa";
 
 import { policeStationsData } from "./../../lib/policeStationsData.js";
+import AddNewOfficer from '../../components/admin/AddNewOfficer.jsx';
 
 const Sidebar = ({ activeItem, setActiveItem }) => (
     <div className="bg-blue-800 text-white w-64 min-h-screen p-4">
@@ -167,38 +168,7 @@ function Dashboard() {
               </div>
             )}
             {activeItem === 'addOfficer' && (
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold mb-4 flex items-center">
-                  <FaUserPlus className="mr-2" /> Add New Officer
-                </h2>
-                <form onSubmit={handleAddOfficer} className="space-y-4">
-                  <div>
-                    <label htmlFor="officerName" className="block text-sm font-medium text-gray-700">Name</label>
-                    <input
-                      type="text"
-                      id="officerName"
-                      value={newOfficer.name}
-                      onChange={(e) => setNewOfficer({...newOfficer, name: e.target.value})}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="officerBadge" className="block text-sm font-medium text-gray-700">Badge Number</label>
-                    <input
-                      type="text"
-                      id="officerBadge"
-                      value={newOfficer.badge}
-                      onChange={(e) => setNewOfficer({...newOfficer, badge: e.target.value})}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                      required
-                    />
-                  </div>
-                  <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                    Add Officer
-                  </button>
-                </form>
-              </div>
+             <AddNewOfficer/>
             )}
             {activeItem === 'assignCase' && (
               <div>
@@ -300,7 +270,6 @@ function Dashboard() {
                     </select>
                   </div>
         
-
                 <div>
                     <label htmlFor="stationName" className="block text-sm font-medium text-gray-700">Station Name</label>
                     <input
