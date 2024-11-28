@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'; 
+import mongoose from "mongoose";
 
 var caseSchema = new mongoose.Schema({
   caseTitle: {
@@ -14,27 +14,27 @@ var caseSchema = new mongoose.Schema({
   caseType: {
     type: String,
     required: true,
-    enum: ['Criminal', 'Civil', 'Family', 'Other'], 
+    enum: ["Criminal", "Civil", "Family", "Other"],
   },
   status: {
     type: String,
     required: true,
-    enum: ['Open', 'In Progress', 'Closed'], 
-    default: 'Open',
+    enum: ["Open", "In Progress", "Closed"],
+    default: "Open",
   },
   caseDate: {
     type: Date,
     required: true,
-    default: Date.now, 
+    default: Date.now,
   },
   citizen: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Citizen',     
+    ref: "Citizen",
     required: true,
   },
   assignedOfficer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Officer', 
+    ref: "Officer",
   },
   officerComments: {
     type: String,
@@ -56,8 +56,20 @@ var caseSchema = new mongoose.Schema({
       },
     },
   ],
+  isClosed: {
+    type: Boolean,
+    default: false,
+  },
+  closureRequested: {
+    type: Boolean,
+    default: false,
+  },
+  closureApproval: {
+    type: Boolean,
+    default: false, // Admin/Supervisor approval will be set here
+  },
 });
 
-const Case = mongoose.model('Case', caseSchema);
+const Case = mongoose.model("Case", caseSchema);
 
 export default Case;
