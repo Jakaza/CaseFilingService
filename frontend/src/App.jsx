@@ -1,6 +1,4 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import HomePage from "./routes/home/homePage";
@@ -10,70 +8,54 @@ import ReportCasePage from "./routes/case/ReportCasePage";
 import TrackCasePage from "./routes/case/TrackCasePage";
 import PasswordResetPage from "./routes/auth/PasswordResetPage";
 import Dashboard from "./routes/admin/Dashboard";
+import { Layout, RequireAuth } from "./routes/layout/Layout";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <HomePage />,
+      element: <Layout />,
+      children: [
+        {
+          path: "/",
+          element: <HomePage />,
+        },
+        {
+          path: "/register",
+          element: <RegisterPage />,
+        },
+        {
+          path: "/login",
+          element: <LoginPage />,
+        },
+        {
+          path: "/track-case",
+          element: <TrackCasePage />,
+        },
+        {
+          path: "/password-reset",
+          element: <PasswordResetPage />,
+        },
+        {
+          path: "/admin",
+          element: <Dashboard />,
+        },
+      ],
     },
+
     {
-      path: "/register",
-      element: <RegisterPage />,
+      path: "/",
+      element: <RequireAuth />,
+      children: [
+        {
+          path: "/open-case",
+          element: <ReportCasePage />,
+        },
+      ],
     },
-    {
-      path: "/login",
-      element: <LoginPage />,
-    },
-    {
-      path: "/open-case",
-      element: <ReportCasePage />,
-    },
-    {
-      path: "/track-case",
-      element: <TrackCasePage />,
-    },
-    {
-      path: "/password-reset",
-      element: <PasswordResetPage />,
-    },
-    {
-      path: "/admin",
-      element: <Dashboard />,
-    },
-    // {
-    //   path: "/",
-    //   element: <RequireAuth />,
-    //   children: [
-    //     {
-    //       path: "/profile",
-    //       element: <ProfilePage />,
-    //       loader: profilePageLoader
-    //     },
-    //     {
-    //       path: "/profile/:chatId",
-    //       element: <ProfilePage />,
-    //       loader: profilePageLoader
-    //     },
-    //     {
-    //       path: "/profile/update",
-    //       element: <ProfileUpdatePage />,
-    //     },
-    //     {
-    //       path: "/add",
-    //       element: <NewPostPage />,
-    //     },
-    //   ],
-    // },
   ]);
 
   return <RouterProvider router={router} />;
-
-  return (
-    <>
-      <HomePage />
-    </>
-  );
 }
 
 export default App;
