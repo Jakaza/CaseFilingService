@@ -18,7 +18,7 @@ var citizenSchema = new mongoose.Schema({
         lowercase: true,
         trim: true,
       },
-      phone: {
+      contact: {
         type: String,
         required: true,
       },
@@ -26,12 +26,17 @@ var citizenSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-
-      address: {
-        type: String,
+      birthdate: {
+        type: String, 
         required: true,
+        validate: {
+          validator: function (value) {
+            return /^\d{4}\/\d{2}\/\d{2}$/.test(value);
+          },
+          message: (props) =>
+            `${props.value} is not a valid date format. Use YYYY/MM/DD.`,
+        },
       },
-
       password: {
         type: String,
         required: true
