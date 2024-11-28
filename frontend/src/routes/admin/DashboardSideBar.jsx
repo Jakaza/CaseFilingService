@@ -6,6 +6,7 @@ import {
   FaBuilding,
   FaEye,
   FaUsers,
+  FaEdit,
 } from "react-icons/fa";
 
 function DashboardSideBar({ activeItem, setActiveItem }) {

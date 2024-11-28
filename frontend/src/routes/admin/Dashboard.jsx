@@ -9,6 +9,7 @@ import HomeDashboard from "../../components/admin/HomeDashboard.jsx";
 import DashboardSideBar from "./DashboardSideBar.jsx";
 import ManageCases from "../../components/admin/ManageCases.jsx";
 import ManageUsers from "../../components/admin/ManageUsers.jsx";
+import OfficerManageCases from "../../components/admin/OfficerManageCases.jsx";
 
 function Dashboard() {
   const [activeItem, setActiveItem] = useState("dashboard");
@@ -41,6 +42,7 @@ function Dashboard() {
           {activeItem === "addStation" && <AddStation />}
           {activeItem === "manageCasses" && <ManageCases />}
           {activeItem === "manageUsers" && <ManageUsers />}
+          {activeItem === "updateCaseStatus" && <OfficerManageCases />}
         </main>
       </div>
     </div>
