@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'); 
+import mongoose from 'mongoose'; 
 
 var citizenSchema = new mongoose.Schema({
     firstname: {
@@ -43,7 +43,7 @@ var citizenSchema = new mongoose.Schema({
       createdCases: [
         {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Case',  // Assuming you have a Case model to store case details
+          ref: 'Case', 
         },
       ],
     });

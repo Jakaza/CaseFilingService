@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'; 
 
-// Define the case schema
 var caseSchema = new mongoose.Schema({
   caseTitle: {
     type: String,
@@ -26,16 +25,16 @@ var caseSchema = new mongoose.Schema({
   caseDate: {
     type: Date,
     required: true,
-    default: Date.now,  // The date when the case was created
+    default: Date.now, 
   },
   citizen: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Citizen',  // Reference to the Citizen model (the person who opened the case)
+    ref: 'Citizen',     
     required: true,
   },
   assignedOfficer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Officer',  // Reference to the Officer model (the person assigned to the case)
+    ref: 'Officer', 
   },
   officerComments: {
     type: String,
