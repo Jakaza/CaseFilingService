@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "./registerPage.css";
-// import { ChevronRight } from 'react-icons/md';
+
 import { FaChevronRight, FaPhoneSquareAlt } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import apiRequest from "../../lib/apiRequest.js"
 
 const InputField = ({
   label,
@@ -36,13 +37,22 @@ const InputField = ({
   </div>
 );
 
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 function RegisterPage() {
   const [formData, setFormData] = useState({
-    firstName: "",
+    firstname: "",
     surname: "",
     email: "",
     contact: "",
-    saId: "",
+    identity: "",
     dateOfBirth: "",
     password: "",
     confirmPassword: "",
@@ -53,27 +63,34 @@ function RegisterPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+  const handleDateChange = (e) => {
+    const { name, value } = e.target;
+    const updatedValue = name === "dateOfBirth" ? formatDate(value) : value;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: updatedValue,
     }));
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate SA ID (assuming it's a 13-digit number)
-    if (!/^\d{13}$/.test(formData.saId)) {
-      newErrors.saId = "SA ID must be a 13-digit number";
+    if (!/^\d{13}$/.test(formData.identity)) {
+      newErrors.identity = "SA ID must be a 13-digit number";
     }
 
-    // Validate password (at least 8 characters, 1 uppercase, 1 lowercase, 1 number)
     if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(formData.password)) {
       newErrors.password =
         "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number";
     }
-
-    // Validate password confirmation
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
@@ -82,12 +99,24 @@ function RegisterPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Form is valid, proceed with registration
-      console.log("Form submitted:", formData);
-      // Here you would typically send the data to your backend
+    
+      try {
+        const res = await apiRequest.post("/auth/register", formData  );
+  
+        console.log(res);
+        
+      } catch (err) {
+
+        console.log(err);
+        
+      } finally {
+
+        console.log("STOP LOADING");
+        
+      }
     }
   };
 
@@ -115,8 +144,8 @@ function RegisterPage() {
             <InputField
               label="First Name"
               type="text"
-              name="firstName"
-              value={formData.firstName}
+              name="firstname"
+              value={formData.firstname}
               onChange={handleChange}
               required
             />
@@ -153,15 +182,15 @@ function RegisterPage() {
             <InputField
               label="SA ID"
               type="text"
-              name="saId"
-              value={formData.saId}
+              name="identity"
+              value={formData.identity}
               onChange={handleChange}
               required
               pattern="\d{13}"
               title="Please enter a valid 13-digit SA ID number"
             />
-            {errors.saId && (
-              <p className="mt-2 text-sm text-red-600">{errors.saId}</p>
+            {errors.identity && (
+              <p className="mt-2 text-sm text-red-600">{errors.identity}</p>
             )}
 
             <InputField
@@ -169,7 +198,7 @@ function RegisterPage() {
               type="date"
               name="dateOfBirth"
               value={formData.dateOfBirth}
-              onChange={handleChange}
+              onChange={handleDateChange}
               required
             />
 

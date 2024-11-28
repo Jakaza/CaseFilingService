@@ -27,14 +27,14 @@ var citizenSchema = new mongoose.Schema({
         required: true,
       },
       birthdate: {
-        type: String, 
+        type: String,
         required: true,
         validate: {
           validator: function (value) {
-            return /^\d{4}\/\d{2}\/\d{2}$/.test(value);
+            return /^\d{4}-\d{2}-\d{2}$/.test(value); // Match YYYY-MM-DD format
           },
           message: (props) =>
-            `${props.value} is not a valid date format. Use YYYY/MM/DD.`,
+            `${props.value} is not a valid date format. Use YYYY-MM-DD.`,
         },
       },
       password: {
