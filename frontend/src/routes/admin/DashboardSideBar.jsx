@@ -76,6 +76,18 @@ function DashboardSideBar({ activeItem, setActiveItem }) {
             <FaUsers className="mr-2" /> Manage Users
           </button>
         </li>
+        <li className="mb-4">
+          <button
+            onClick={() => setActiveItem("updateCaseStatus")}
+            className={`flex items-center w-full p-2 rounded ${
+              activeItem === "updateCaseStatus"
+                ? "bg-blue-600"
+                : "hover:bg-blue-700"
+            }`}
+          >
+            <FaEdit className="mr-2" /> Update Case Status
+          </button>
+        </li>
       </ul>
     </div>
   );
