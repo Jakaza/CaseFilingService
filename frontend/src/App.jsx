@@ -13,6 +13,7 @@ import { Layout, RequireAuth } from "./routes/layout/Layout";
 import ContactUs from "./routes/policy/ContactUs";
 import UserProfile from "./routes/profile/UserProfile";
 import FileReportPage from "./routes/case/FileReportPage";
+import FileComplaintsPage from "./routes/case/FileComplaintsPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -51,6 +52,10 @@ function App() {
         {
           path: "/file-report",
           element: <FileReportPage />,
+        },
+        {
+          path: "/file-complaint",
+          element: <FileComplaintsPage />,
         },
         {
           path: "/password-reset",
