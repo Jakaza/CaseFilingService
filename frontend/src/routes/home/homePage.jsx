@@ -3,6 +3,8 @@ import "./homePage.css";
 import { FaChevronRight, FaPhoneSquareAlt } from "react-icons/fa";
 import { FaFileShield } from "react-icons/fa6";
 import { FiFileText } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import {AuthContext} from "./../../context/AuthContext"
 import Navbar from "../../components/navbar/Navbar";
 
 
@@ -26,6 +28,7 @@ const CardContent = ({ children }) => <div>{children}</div>;
 
 function homePage() {
 
+  const { currentUser } = useContext(AuthContext);
 
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
@@ -39,7 +42,8 @@ function homePage() {
           <p className="text-xl text-gray-700 mb-8">
             Report incidents, file complaints, and track your cases online.
           </p>
-          <div className="flex flex-col space-y-4 items-center">
+
+          {currentUser ? (<div className="flex flex-col space-y-4 items-center">
             <Button className="bg-blue-600 text-yellow-200 hover:bg-blue-700 text-white text-lg max-w-xs">
               <Link to="open-case" className="flex items-center justify-center">
                 Open a New Case
@@ -56,7 +60,17 @@ function homePage() {
                 <FaChevronRight className="inline-block ml-2 h-4 w-4" />
               </Link>
             </Button>
+          </div>) : (
+            <div className="flex flex-col space-y-4 items-center">
+            <Button className="bg-blue-600 text-white hover:bg-blue-700 text-lg max-w-xs">
+              <Link to="/login" className="flex items-center justify-center">
+                Create Account to get started
+                
+              </Link>
+            </Button>
           </div>
+          )}
+          
         </section>
 
         <section className="grid md:grid-cols-3 gap-6 mb-12">
