@@ -41,7 +41,6 @@ export const registerCitizen = async (req, res) => {
 
 export const login = async (req, res) => {
   const { identity, password } = req.body;
-  console.log(req.body);
   
   try {
     const validationErrors = validateLogin(req.body);
@@ -68,8 +67,6 @@ export const login = async (req, res) => {
       { expiresIn: age }
     );
 
-    const { password: userPassword, ...userInfo } = user;
-
     res
       .cookie("token", token, {
         httpOnly: true,
@@ -77,7 +74,7 @@ export const login = async (req, res) => {
         maxAge: age,
       })
       .status(200)
-      .json(userInfo);
+      .json(user);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to login!" });

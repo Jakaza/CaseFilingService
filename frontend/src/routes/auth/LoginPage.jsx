@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
+import {AuthContext} from "./../../context/AuthContext"
 
 const InputField = ({
   label,
@@ -40,6 +41,8 @@ function LoginPage() {
     password: "",
   });
 
+  const {updateUser} = useContext(AuthContext)
+
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -75,7 +78,7 @@ function LoginPage() {
      
       try {
         const res = await apiRequest.post("/auth/login" , formData);
-        console.log(res);
+        updateUser(res.data)
         
       } catch (error) {
         console.log(error);

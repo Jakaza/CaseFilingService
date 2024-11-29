@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./homePage.css";
-// import { ChevronRight } from 'react-icons/md';
 import { FaChevronRight, FaPhoneSquareAlt } from "react-icons/fa";
 import { FaFileShield } from "react-icons/fa6";
 import { FiFileText } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import apiRequest from "../../lib/apiRequest";
-// import { FileText, Phone, Shield } from 'react-icons/lu';
+import {AuthContext} from "./../../context/AuthContext"
+import { Link, useLoaderData } from "react-router-dom";
+
 
 const Button = ({ children, className, ...props }) => (
   <button className={`px-4 py-2 rounded font-semibold ${className}`} {...props}>
@@ -28,20 +27,8 @@ const CardContent = ({ children }) => <div>{children}</div>;
 
 function homePage() {
 
-  const [users, setUsers] = useState([])
-
-
- 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await apiRequest.get("/users");
-     console.log(response);
-     
-    }
-    fetchData();
-  }, []); 
-
-
+  const data = useLoaderData();
+  const { currentUser } = useContext(AuthContext);
 
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
@@ -74,11 +61,27 @@ function homePage() {
                   Contact
                 </a>
               </li>
-              <li>
-                <Link to="/login" className="hover:text-yellow-300">
-                  Sign In
-                </Link>
-              </li>
+
+
+              {currentUser ? (
+          <div className="user">
+          
+            <span>{currentUser.firstname}</span>
+            <Link to="/profile" className="profile">
+            
+              <span> - Profile</span>
+            </Link>
+          </div>
+        ) : (
+          <li>
+          <Link to="/login" className="hover:text-yellow-300">
+            Sign In
+          </Link>
+         </li>
+        )}
+
+
+           
             </ul>
           </nav>
         </div>
