@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "./registerPage.css";
-
-import { FaChevronRight, FaPhoneSquareAlt } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest.js"
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 const InputField = ({
   label,
@@ -53,13 +55,13 @@ function RegisterPage() {
     email: "",
     contact: "",
     identity: "",
-    dateOfBirth: "",
     password: "",
     confirmPassword: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,15 +70,6 @@ function RegisterPage() {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-  };
-  const handleDateChange = (e) => {
-    const { name, value } = e.target;
-    const updatedValue = name === "dateOfBirth" ? formatDate(value) : value;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: updatedValue,
     }));
   };
 
@@ -101,13 +94,20 @@ function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+   
     if (validateForm()) {
     
       try {
         const res = await apiRequest.post("/auth/register", formData  );
-  
-        console.log(res);
-        
+        if(res.data.user.success == true){
+          MySwal.fire({
+            title: <strong>Success!</strong>,
+            html: <p>Your account has been successfully created.</p>,
+            icon: 'success',
+          }).then(() => {
+            navigate("/login");
+          });
+        }
       } catch (err) {
 
         console.log(err);
@@ -192,15 +192,6 @@ function RegisterPage() {
             {errors.identity && (
               <p className="mt-2 text-sm text-red-600">{errors.identity}</p>
             )}
-
-            <InputField
-              label="Date of Birth"
-              type="date"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleDateChange}
-              required
-            />
 
             <div className="relative">
               <InputField

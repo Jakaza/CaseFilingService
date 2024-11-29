@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./homePage.css";
 // import { ChevronRight } from 'react-icons/md';
 import { FaChevronRight, FaPhoneSquareAlt } from "react-icons/fa";
 import { FaFileShield } from "react-icons/fa6";
 import { FiFileText } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import apiRequest from "../../lib/apiRequest";
 // import { FileText, Phone, Shield } from 'react-icons/lu';
 
 const Button = ({ children, className, ...props }) => (
@@ -26,6 +27,22 @@ const CardTitle = ({ children, className }) => (
 const CardContent = ({ children }) => <div>{children}</div>;
 
 function homePage() {
+
+  const [users, setUsers] = useState([])
+
+
+ 
+  useEffect(() => {
+    async function fetchData() {
+      const response = await apiRequest.get("/users");
+     console.log(response);
+     
+    }
+    fetchData();
+  }, []); 
+
+
+
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
       <header className="bg-blue-800 text-white p-4">

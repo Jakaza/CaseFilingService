@@ -43,14 +43,6 @@ export const validateCitizenRegistration = (data) => {
     errors.identity = "Identity number must be 13 digits.";
   }
 
-  if (
-    !data.birthdate ||
-    !/^\d{4}\/\d{2}\/\d{2}$/.test(data.birthdate) ||
-    isNaN(new Date(data.birthdate).getTime())
-  ) {
-    errors.birthdate = "Birthdate must be in YYYY/MM/DD format and valid.";
-  }
-
   if (!data.password || data.password.length < 8) {
     errors.password = "Password is required and must be at least 8 characters.";
   }
@@ -61,8 +53,8 @@ export const validateCitizenRegistration = (data) => {
 export const validateLogin = (data) => {
   const errors = {};
 
-  if (!data.email || !validator.isEmail(data.email)) {
-    errors.email = "A valid email is required.";
+  if (!data.identity) {
+    errors.identity = "A valid identity number is required.";
   }
 
   if (!data.password || data.password.length < 8) {

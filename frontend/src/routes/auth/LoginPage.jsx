@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import apiRequest from "../../lib/apiRequest";
 
 const InputField = ({
   label,
@@ -35,7 +36,7 @@ const InputField = ({
 
 function LoginPage() {
   const [formData, setFormData] = useState({
-    saId: "",
+    identity: "",
     password: "",
   });
 
@@ -54,8 +55,8 @@ function LoginPage() {
     const newErrors = {};
 
     // Validate SA ID (assuming it's a 13-digit number)
-    if (!/^\d{13}$/.test(formData.saId)) {
-      newErrors.saId = "SA ID must be a 13-digit number";
+    if (!/^\d{13}$/.test(formData.identity)) {
+      newErrors.identity = "SA ID must be a 13-digit number";
     }
 
     // Validate password (at least 8 characters, 1 uppercase, 1 lowercase, 1 number)
@@ -68,11 +69,20 @@ function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Form is valid, proceed with registration
-      console.log("Form submitted:", formData);
+     
+      try {
+        const res = await apiRequest.post("/auth/login" , formData);
+        console.log(res);
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+
+
       // Here you would typically send the data to your backend
     }
   };
@@ -101,15 +111,15 @@ function LoginPage() {
             <InputField
               label="SA ID"
               type="text"
-              name="saId"
-              value={formData.saId}
+              name="identity"
+              value={formData.identity}
               onChange={handleChange}
               required
               pattern="\d{13}"
               title="Please enter a valid 13-digit SA ID number"
             />
-            {errors.saId && (
-              <p className="mt-2 text-sm text-red-600">{errors.saId}</p>
+            {errors.identity && (
+              <p className="mt-2 text-sm text-red-600">{errors.identity}</p>
             )}
 
             <div className="relative">

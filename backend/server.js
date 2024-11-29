@@ -18,12 +18,26 @@ import { configurePassport } from "./config/passport.js";
 
 initDb();
 
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+// app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
 configurePassport(passport);
 app.use(passport.initialize());
+
+
+app.get("/api/users", (req , res)=>{
+  res.json([{
+    name: "Jakaza",
+    age: 12
+  },{
+    name: "Khensani",
+    age: 12
+  },{
+    name: "Nsovo",
+    age: 12
+  },])
+});
 
 app.use("/api/auth", authRoute);
 app.use("/api/case", caseRoute);

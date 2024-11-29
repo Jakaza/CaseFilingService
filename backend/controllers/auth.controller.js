@@ -40,20 +40,22 @@ export const registerCitizen = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { identity, password } = req.body;
+  console.log(req.body);
+  
   try {
     const validationErrors = validateLogin(req.body);
     if (hasValidationErrors(validationErrors)) {
       return res.status(400).json({ errors: validationErrors });
     }
 
-    let user = await Citizen.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid Credentials!" });
+    let user = await Citizen.findOne({ identity });
+    if (!user) return res.status(400).json({ message: "Invalid Identity Number!" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid)
-      return res.status(400).json({ message: "Invalid Credentials!" });
+      return res.status(400).json({ message: "Wrong Password Entered !" });
 
     const age = 1000 * 60 * 60 * 24 * 7;
 
