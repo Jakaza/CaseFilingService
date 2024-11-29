@@ -35,32 +35,12 @@ function App() {
           element:<ContactUs />,
         },
         {
-          path: "/profile",
-          element:<UserProfile />,
-        },
-        {
           path: "/register",
           element: <RegisterPage />,
         },
         {
           path: "/login",
           element: <LoginPage />,
-        },
-        {
-          path: "/track-case",
-          element: <TrackCasePage />,
-        },
-        {
-          path: "/file-report",
-          element: <FileReportPage />,
-        },
-        {
-          path: "/file-complaint",
-          element: <FileComplaintsPage />,
-        },
-        {
-          path: "/view-cases",
-          element: <ViewCasesPage />,
         },
         {
           path: "/password-reset",
@@ -78,8 +58,28 @@ function App() {
       element: <RequireAuth />,
       children: [
         {
+          path: "/profile",
+          element:<UserProfile />,
+        },
+        {
           path: "/open-case",
           element: <ReportCasePage />,
+        },
+        {
+          path: "/track-case",
+          element: <TrackCasePage />,
+        },
+        {
+          path: "/file-report",
+          element: <FileReportPage />,
+        },
+        {
+          path: "/file-complaint",
+          element: <FileComplaintsPage />,
+        },
+        {
+          path: "/view-cases",
+          element: <ViewCasesPage />,
         },
       ],
     },
