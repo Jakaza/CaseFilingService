@@ -32,9 +32,9 @@ function Navbar() {
             </a>
           </li>
           <li>
-            <a href="#" className="hover:text-yellow-300">
-              Contact
-            </a>
+          <Link to="/contact" className="hover:text-yellow-300">
+              Contact Us
+            </Link>
           </li>
 
 

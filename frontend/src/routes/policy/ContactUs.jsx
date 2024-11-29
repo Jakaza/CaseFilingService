@@ -1,6 +1,5 @@
 import React from "react";
 import Navbar from "../../components/navbar/Navbar";
-import "./contactPage.css";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 function ContactUs() {

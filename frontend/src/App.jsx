@@ -10,6 +10,7 @@ import TermsAndConditions from "./routes/policy/TermsAndConditions";
 import PasswordResetPage from "./routes/auth/PasswordResetPage";
 import Dashboard from "./routes/admin/Dashboard";
 import { Layout, RequireAuth } from "./routes/layout/Layout";
+import ContactUs from "./routes/policy/ContactUs";
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +25,10 @@ function App() {
         {
           path: "/terms",
           element:<TermsAndConditions />,
+        },
+        {
+          path: "/contact",
+          element:<ContactUs />,
         },
         {
           path: "/register",
