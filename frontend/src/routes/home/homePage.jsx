@@ -45,7 +45,7 @@ function homePage() {
 
           {currentUser ? (<div className="flex flex-col space-y-4 items-center">
             <Button className="bg-blue-600 text-yellow-200 hover:bg-blue-700 text-white text-lg max-w-xs">
-              <Link to="open-case" className="flex items-center justify-center">
+              <Link to="/open-case" className="flex items-center justify-center">
                 Open a New Case
                 <FaChevronRight className="inline-block ml-2 h-4 w-4" />
               </Link>
@@ -53,10 +53,10 @@ function homePage() {
 
             <Button className="bg-yellow-400 text-white hover:bg-yellow-200 text-lg max-w-xs">
               <Link
-                to="track-case"
+                to="/profile"
                 className="flex items-center justify-center"
               >
-                Track Your Case
+                View All Services
                 <FaChevronRight className="inline-block ml-2 h-4 w-4" />
               </Link>
             </Button>
