@@ -6,6 +6,7 @@ import {
   FaSpinner,
   FaExclamationTriangle,
 } from "react-icons/fa";
+import Navbar from "../../components/navbar/Navbar";
 
 function TrackCasePage() {
   const [caseNumber, setCaseNumber] = useState("");
@@ -69,44 +70,7 @@ function TrackCasePage() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <header className="bg-blue-800 text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center">
-            <img
-              src="/saps_banner-removebg-preview.png"
-              alt="SAPS Logo"
-              className="h-12 mr-4"
-            />
-            <h1 className="text-2xl font-bold text-yellow-400">
-              <Link to="/">SAPS DEPARTMENT</Link>
-            </h1>
-          </div>
-          <nav>
-            <ul className="flex space-x-4">
-              <li>
-                <Link to="/" className="hover:text-yellow-300">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <a href="#" className="hover:text-yellow-300">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-yellow-300">
-                  Contact
-                </a>
-              </li>
-              <li>
-                <Link to="/login" className="hover:text-yellow-300">
-                  Sign In
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+     <Navbar />
 
       <main className="container mx-auto mt-8 px-4 flex-grow">
         <section className="bg-white p-6 rounded-lg shadow-md mb-8">

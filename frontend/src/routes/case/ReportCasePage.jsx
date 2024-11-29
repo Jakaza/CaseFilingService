@@ -10,6 +10,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 // Sample police stations data
 import { policeStationsData } from "./../../lib/policeStationsData.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
+import Navbar from "../../components/navbar/Navbar.jsx";
 
 const Modal = ({ isOpen, onSave, onClose, children }) => {
   useEffect(() => {
@@ -139,44 +140,7 @@ const ReportCasePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
-      <header className="bg-blue-800 text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center">
-            <img
-              src="/saps_banner-removebg-preview.png"
-              alt="SAPS Logo"
-              className="h-12 mr-4"
-            />
-            <h1 className="text-2xl font-bold text-yellow-400">
-              <Link to="/">SAPS DEPARTMENT</Link>
-            </h1>
-          </div>
-          <nav>
-            <ul className="flex space-x-4">
-              <li>
-                <Link to="/" className="hover:text-yellow-300">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <a href="#" className="hover:text-yellow-300">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-yellow-300">
-                  Contact
-                </a>
-              </li>
-              <li>
-                <Link to="/login" className="hover:text-yellow-300">
-                  Sign In
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+     <Navbar />
 
       <main className="container mx-auto mt-8 px-4">
         <section className="text-center mb-10">

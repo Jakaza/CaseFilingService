@@ -3,8 +3,7 @@ import "./homePage.css";
 import { FaChevronRight, FaPhoneSquareAlt } from "react-icons/fa";
 import { FaFileShield } from "react-icons/fa6";
 import { FiFileText } from "react-icons/fi";
-import {AuthContext} from "./../../context/AuthContext"
-import { Link, useLoaderData } from "react-router-dom";
+import Navbar from "../../components/navbar/Navbar";
 
 
 const Button = ({ children, className, ...props }) => (
@@ -27,65 +26,10 @@ const CardContent = ({ children }) => <div>{children}</div>;
 
 function homePage() {
 
-  const data = useLoaderData();
-  const { currentUser } = useContext(AuthContext);
 
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
-      <header className="bg-blue-800 text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center">
-            <img
-              src="/saps_banner-removebg-preview.png"
-              alt="SAPS Logo"
-              className="h-12 mr-4"
-            />
-            <h1 className="text-2xl font-bold text-yellow-400">
-              <Link to="/">SAPS DEPARTMENT</Link>
-            </h1>
-          </div>
-          <nav>
-            <ul className="flex space-x-4">
-              <li>
-                <Link to="/" className="hover:text-yellow-300">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <a href="#" className="hover:text-yellow-300">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-yellow-300">
-                  Contact
-                </a>
-              </li>
-
-
-              {currentUser ? (
-          <div className="user">
-          
-            <span>{currentUser.firstname}</span>
-            <Link to="/profile" className="profile">
-            
-              <span> - Profile</span>
-            </Link>
-          </div>
-        ) : (
-          <li>
-          <Link to="/login" className="hover:text-yellow-300">
-            Sign In
-          </Link>
-         </li>
-        )}
-
-
-           
-            </ul>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="container mx-auto mt-8 px-4">
         <section className="text-center mb-12">
