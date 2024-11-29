@@ -11,6 +11,8 @@ import PasswordResetPage from "./routes/auth/PasswordResetPage";
 import Dashboard from "./routes/admin/Dashboard";
 import { Layout, RequireAuth } from "./routes/layout/Layout";
 import ContactUs from "./routes/policy/ContactUs";
+import UserProfile from "./routes/profile/UserProfile";
+import FileReportPage from "./routes/case/FileReportPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -31,6 +33,10 @@ function App() {
           element:<ContactUs />,
         },
         {
+          path: "/profile",
+          element:<UserProfile />,
+        },
+        {
           path: "/register",
           element: <RegisterPage />,
         },
@@ -41,6 +47,10 @@ function App() {
         {
           path: "/track-case",
           element: <TrackCasePage />,
+        },
+        {
+          path: "/file-report",
+          element: <FileReportPage />,
         },
         {
           path: "/password-reset",

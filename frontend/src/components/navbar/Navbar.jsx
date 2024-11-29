@@ -27,11 +27,6 @@ function Navbar() {
             </Link>
           </li>
           <li>
-            <a href="#" className="hover:text-yellow-300">
-              Services
-            </a>
-          </li>
-          <li>
           <Link to="/contact" className="hover:text-yellow-300">
               Contact Us
             </Link>
