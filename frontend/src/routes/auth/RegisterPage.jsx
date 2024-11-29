@@ -130,7 +130,7 @@ function RegisterPage() {
         <p className="text-center mt-2">
           <small>
             When you sign up, our{" "}
-            <a className="text-red-500" href="">
+            <a className="text-red-500" href="/terms">
               Terms and Privacy Policy
             </a>{" "}
             will apply.

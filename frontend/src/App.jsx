@@ -6,6 +6,7 @@ import RegisterPage from "./routes/auth/registerPage";
 import LoginPage from "./routes/auth/LoginPage";
 import ReportCasePage from "./routes/case/ReportCasePage";
 import TrackCasePage from "./routes/case/TrackCasePage";
+import TermsAndConditions from "./routes/policy/TermsAndConditions";
 import PasswordResetPage from "./routes/auth/PasswordResetPage";
 import Dashboard from "./routes/admin/Dashboard";
 import { Layout, RequireAuth } from "./routes/layout/Layout";
@@ -19,6 +20,10 @@ function App() {
         {
           path: "/",
           element: <HomePage />,
+        },
+        {
+          path: "/terms",
+          element:<TermsAndConditions />,
         },
         {
           path: "/register",
