@@ -34,8 +34,25 @@ var caseSchema = new mongoose.Schema({
   caseType: {
     type: String,
     required: true,
-    enum: ["Criminal", "Civil", "Family", "Other"],
-  },
+    enum: [
+      "Assault", 
+      "Theft", 
+      "Burglary", 
+      "Fraud", 
+      "Domestic Violence", 
+      "Robbery", 
+      "Rape", 
+      "Hate Crime", 
+      "Corruption", 
+      "Drunk Driving", 
+      "Murder", 
+      "Child Abuse", 
+      "Traffic Offense", 
+      "Civil Dispute", 
+      "Environmental Crime", 
+      "Other"
+    ],
+  },  
   status: {
     type: String,
     required: true,

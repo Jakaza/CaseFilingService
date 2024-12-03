@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useContext } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 import {
   FaMicrophone as Mic,
   FaKeyboard as Keyboard,
@@ -7,10 +9,10 @@ import {
 } from "react-icons/fa";
 import { useReactMediaRecorder } from "react-media-recorder";
 
-// Sample police stations data
 import { policeStationsData } from "./../../lib/policeStationsData.js";
-import { AuthContext } from "../../context/AuthContext.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
+import { useNavigate } from "react-router";
+import apiRequest from "../../lib/apiRequest.js";
 
 const Modal = ({ isOpen, onSave, onClose, children }) => {
   useEffect(() => {
@@ -29,34 +31,7 @@ const Modal = ({ isOpen, onSave, onClose, children }) => {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border h-3/4 w-5/6 shadow-lg rounded-md bg-white">
-        <div className="mt-3 text-center">
-          {children}
-
-          {/* {caseDetails && (
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Case Details
-              </label>
-              <p className="text-sm text-gray-600">{caseDetails}</p>
-            </div>
-          )} */}
-
-          <div className="items-center flex px-4 py-3">
-            <button
-              onClick={onSave}
-              className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            >
-              Save
-            </button>
-
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+        <div className="mt-3 text-center">{children}</div>
       </div>
     </div>
   );
@@ -66,14 +41,18 @@ const ReportCasePage = () => {
   // const { updateUser, currentUser } = useContext(AuthContext);
   // const navigate = useNavigate();
 
-  const [reportMethod, setReportMethod] = useState("");
+  const navigate = useNavigate();
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [isEditable, setIsEditable] = useState(true);
+  const [caseTitle, setCaseTitle] = useState("Reported Incident");
   const [language, setLanguage] = useState("");
   const [caseType, setCaseType] = useState("");
   const [caseDetails, setCaseDetails] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedTownship, setSelectedTownship] = useState("");
   const [selectedStation, setSelectedStation] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const provinces = Object.keys(policeStationsData);
@@ -91,40 +70,84 @@ const ReportCasePage = () => {
     "Burglary",
     "Fraud",
     "Domestic Violence",
+    "Robbery",
+    "Rape",
+    "Hate Crime",
+    "Corruption",
+    "Drunk Driving",
+    "Murder",
+    "Child Abuse",
+    "Traffic Offense",
+    "Civil Dispute",
+    "Environmental Crime",
     "Other",
   ];
 
-  const { startRecording, stopRecording, mediaBlobUrl, status } =
-    useReactMediaRecorder({
-      audio: true,
-    });
+  useEffect(() => {
+    setErrorMessage("");
+  }, [language, caseType, selectedProvince, selectedTownship, selectedStation]);
 
   const handleSave = () => {
-    if (reportMethod === "typing") {
-      console.log("Saving Text Statement To Database....");
-    } else if (reportMethod === "voice") {
-      console.log("Saving Voice Statement To Database....");
-    }
-
-    console.log("Something Went Wrong.");
+    setIsEditable(false);
+  };
+  const handleClose = () => {
+    console.log("Close Clicked");
   };
 
-  const handleVoiceRecord = () => {
-    setIsRecording(!isRecording);
-    if (isRecording) {
-      setCaseDetails(
-        "Voice recording completed. (This is a placeholder for actual voice data)"
-      );
-      setIsModalOpen(false);
-    }
+  const handleEdit = () => {
+    setIsEditable(true);
   };
 
-  const handleReportMethodSelect = (method) => {
-    setReportMethod(method);
+  const handleSubmitCase = async () => {
+    try {
+      const caseData = {
+        caseTitle: caseTitle, // Modify as per your needs or provide an input field for it
+        caseDescription: caseDetails,
+        caseType,
+        province: selectedProvince,
+        township: selectedTownship,
+        station: selectedStation,
+        language,
+      };
+      const res = await apiRequest.post("/case/open", caseData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(res.data.response.success);
+
+      if (res.data.response.success) {
+        MySwal.fire({
+          title: <strong>Success!</strong>,
+          html: <p>{res.data.response.message}</p>,
+          icon: "success",
+        }).then(() => {
+          navigate("/track-case");
+        });
+      }
+
+      // console.log(response.data);
+    } catch (error) {
+      console.error("Error creating case:", error);
+      setErrorMessage("There was an error while submitting your case.");
+    }
   };
 
   const handleStart = () => {
-    setIsModalOpen(true);
+    if (
+      !selectedProvince ||
+      !selectedTownship ||
+      !selectedStation ||
+      !language ||
+      !caseType
+    ) {
+      setErrorMessage("Please select all required fields before proceeding.");
+      return;
+    }
+
+    setIsModalOpen(true); // Open the modal only if all fields are selected
+    setErrorMessage(""); // Clear error message if validation is successful
   };
 
   const handleProvinceChange = (e) => {
@@ -140,16 +163,16 @@ const ReportCasePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
-     <Navbar />
+      <Navbar />
 
       <main className="container mx-auto mt-8 px-4">
         <section className="text-center mb-10">
           <h2 className="text-3xl font-bold text-blue-900 mb-4">
-            Choose Your Reporting Method and Provide Details to Get Started
+            Select the Location of Your Incident
           </h2>
           <p className="text-xl text-gray-700 mb-8">
-            Please select whether you'd like to report by typing or using voice
-            recording.
+            Choose your incident's location and the nearest police station to
+            begin reporting your case.
           </p>
         </section>
 
@@ -162,35 +185,29 @@ const ReportCasePage = () => {
               }}
               className="px-4 py-5 sm:p-6"
             >
-              {/* Reporting Method Selection */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Reporting Method
-                </label>
-                <div className="flex space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => handleReportMethodSelect("voice")}
-                    className={`flex items-center justify-center px-4 py-2 border rounded-md ${
-                      reportMethod === "voice"
-                        ? "bg-blue-500 text-white"
-                        : "bg-white text-gray-700"
-                    }`}
-                  >
-                    <Mic className="mr-2" /> Voice
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleReportMethodSelect("typing")}
-                    className={`flex items-center justify-center px-4 py-2 border rounded-md ${
-                      reportMethod === "typing"
-                        ? "bg-blue-500 text-white"
-                        : "bg-white text-gray-700"
-                    }`}
-                  >
-                    <Keyboard className="mr-2" /> Typing
-                  </button>
+              {errorMessage && (
+                <div className="text-red-500 text-center text-sm mt-2">
+                  {errorMessage}
+                  <br />
+                  <br />
                 </div>
+              )}
+
+              <div className="mb-4">
+                <label
+                  htmlFor="caseTitle"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Case Title
+                </label>
+                <input
+                  type="text"
+                  id="caseTitle"
+                  value={caseTitle}
+                  onChange={(e) => setCaseTitle(e.target.value)}
+                  className="block w-full px-4 py-2 border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                  placeholder="Enter case title"
+                />
               </div>
 
               {/* Province Selection */}
@@ -327,50 +344,83 @@ const ReportCasePage = () => {
             </form>
           </div>
 
-          <Modal
-            isOpen={isModalOpen && reportMethod === "voice"}
-            onSave={handleSave}
-            onClose={() => setIsModalOpen(false)}
-          >
+          {/* Modal for Case Preview and Submit */}
+          <Modal isOpen={isModalOpen}>
             <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-              Voice Recording
+              {isEditable
+                ? "Edit Your Case Details"
+                : "Preview Your Case Details"}
             </h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Please speak clearly to record your case details.
-            </p>
-            <button
-              onClick={status === "recording" ? stopRecording : startRecording}
-              className={`w-full flex items-center justify-center px-4 py-2 border rounded-md ${
-                status === "recording"
-                  ? "bg-red-500 text-white"
-                  : "bg-blue-500 text-white"
-              }`}
-            >
-              <Mic className="mr-2" />
-              {status === "recording" ? "Stop Recording" : "Start Recording"}
-            </button>
-            {mediaBlobUrl && (
-              <div className="mt-4">
-                <audio src={mediaBlobUrl} controls className="w-full" />
+
+            {isEditable ? (
+              // Editable Mode
+              <textarea
+                rows={6}
+                value={caseDetails}
+                onChange={(e) => setCaseDetails(e.target.value)}
+                className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
+                placeholder="Please describe the incident in detail..."
+              />
+            ) : (
+              // Preview Mode
+              <div className="case-details-preview">
+                <h4>Case Title: {caseTitle}</h4>
+                <p>
+                  <strong>Case Type:</strong> {caseType}
+                </p>
+                <p>
+                  <strong>Language:</strong> {language}
+                </p>
+                <p>
+                  <strong>Province:</strong> {selectedProvince}
+                </p>
+                <p>
+                  <strong>Township:</strong> {selectedTownship}
+                </p>
+                <p>
+                  <strong>Police Station:</strong> {selectedStation}
+                </p>
+                <p>
+                  <strong>Case Description:</strong> {caseDetails}
+                </p>
               </div>
             )}
-          </Modal>
 
-          <Modal
-            isOpen={isModalOpen && reportMethod === "typing"}
-            onSave={handleSave}
-            onClose={() => setIsModalOpen(false)}
-          >
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-              Type Your Case Details
-            </h3>
-            <textarea
-              rows={6}
-              value={caseDetails}
-              onChange={(e) => setCaseDetails(e.target.value)}
-              className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
-              placeholder="Please describe the incident in detail..."
-            />
+            <div className="flex justify-between mt-4">
+              {!isEditable ? (
+                <>
+                  <button
+                    onClick={handleSubmitCase}
+                    className="px-4 py-2 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-300"
+                  >
+                    Submit Case
+                  </button>
+
+                  <button
+                    onClick={handleEdit}
+                    className="px-4 py-2 bg-yellow-500 text-white font-medium rounded-md shadow-sm hover:bg-yellow-700 focus:ring-2 focus:ring-yellow-300"
+                  >
+                    Edit
+                  </button>
+                </>
+              ) : (
+                <div className="items-center flex px-4 py-3">
+                  <button
+                    onClick={handleSave}
+                    className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  >
+                    Save
+                  </button>
+
+                  <button
+                    onClick={handleClose}
+                    className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
           </Modal>
         </section>
       </main>
