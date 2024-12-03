@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
-import {AuthContext} from "./../../context/AuthContext"
+import { AuthContext } from "./../../context/AuthContext";
 
 const InputField = ({
   label,
@@ -41,12 +41,17 @@ function LoginPage() {
     password: "",
   });
 
-  const {updateUser} = useContext(AuthContext)
+  const { updateUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [serverErrors, setServerErrors] = useState("");
+  const [loading, setLoading] = useState(false); // New state for loading
 
   const handleChange = (e) => {
+    setServerErrors("");
+    setErrors({});
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -57,12 +62,10 @@ function LoginPage() {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate SA ID (assuming it's a 13-digit number)
     if (!/^\d{13}$/.test(formData.identity)) {
       newErrors.identity = "SA ID must be a 13-digit number";
     }
 
-    // Validate password (at least 8 characters, 1 uppercase, 1 lowercase, 1 number)
     if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(formData.password)) {
       newErrors.password =
         "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number";
@@ -74,19 +77,27 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setServerErrors("");
+    updateUser(null);
     if (validateForm()) {
-     
+      setLoading(true); // Set loading to true
       try {
-        const res = await apiRequest.post("/auth/login" , formData);
-        updateUser(res.data)
-        
+        const res = await apiRequest.post("/auth/login", formData);
+
+        if (res.code === "ERR_BAD_REQUEST" && res.response.status === 400) {
+          console.log(res.response.data);
+        } else {
+          updateUser(res.data);
+          navigate("/"); // Navigate to the dashboard
+        }
       } catch (error) {
+        if (error.code === "ERR_BAD_REQUEST" && error.response.status === 400) {
+          setServerErrors(error.response.data.message);
+        }
         console.log(error);
-        
+      } finally {
+        setLoading(false); // Set loading back to false
       }
-
-
-      // Here you would typically send the data to your backend
     }
   };
 
@@ -100,7 +111,7 @@ function LoginPage() {
         <p className="text-center">
           <small>
             When you sign up, our{" "}
-            <a className="text-red-500" href="/terms">
+            <a className="text-blue-500" href="/terms">
               Terms and Privacy Policy
             </a>{" "}
             will apply.
@@ -111,6 +122,12 @@ function LoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {serverErrors && (
+              <p className="mt-2 text-center text-sm text-red-600">
+                {serverErrors}
+              </p>
+            )}
+
             <InputField
               label="SA ID"
               type="text"
@@ -159,14 +176,19 @@ function LoginPage() {
 
               <button
                 type="submit"
-                className="w-full mt-2 mb-3 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className={`w-full mt-2 mb-3 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
+                disabled={loading}
               >
-                Login
+                {loading ? "Logging in..." : "Login"}
               </button>
 
               <p>
                 {" "}
-                Don't have Acount?{" "}
+                Don't have an account?{" "}
                 <Link className="text-blue-400" to="/register">
                   {" "}
                   Register
