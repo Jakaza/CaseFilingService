@@ -80,3 +80,37 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Failed to login!" });
   }
 };
+
+export const requestPasswordReset = async (req, res) => {
+  const { email, userType } = req.body;
+
+  try {
+    const userModel = userType === 'Citizen' ? Citizen : Officer;
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'No account associated with this email.' });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    const expirationTime = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+    await PasswordReset.create({
+      userId: user._id,
+      userType,
+      resetToken: hashedToken,
+      expiresAt: expirationTime,
+    });
+
+    const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+    // TODO::Send reset email logic here 
+
+    res.status(200).json({ message: 'Password reset link sent successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to send password reset link.' });
+  }
+};
