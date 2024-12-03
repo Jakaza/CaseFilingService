@@ -41,6 +41,7 @@ export const registerCitizen = async (req, res) => {
   }
 };
 
+
 export const login = async (req, res) => {
   const { identity, password } = req.body;
   
@@ -81,6 +82,10 @@ export const login = async (req, res) => {
     console.log(err);
     res.status(500).json({ message: "Failed to login!" });
   }
+};
+
+export const logout = async (req, res) => {
+  res.clearCookie("token").status(200).json({ message: "Logout Successful" });
 };
 
 export const requestPasswordReset = async (req, res) => {
