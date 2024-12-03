@@ -1,5 +1,5 @@
 import passport from "passport";
-import { openCase, requestCloseCase } from "../helpers/case.helper.js";
+import { openCase, requestCloseCase , generatedCaseNumber } from "../helpers/case.helper.js";
 import Case from "../models/caseSchema.js";
 import CloseReason from "../models/closeReasonSchema.js";
 
@@ -21,6 +21,8 @@ export const open = async (req, res, next) => {
       caseType,
     } = req.body;
 
+    const caseNumber = generatedCaseNumber()
+
     const caseData = {
       caseTitle,
       province,
@@ -29,6 +31,7 @@ export const open = async (req, res, next) => {
       language,
       caseDescription,
       caseType,
+      caseNumber: caseNumber,
       citizen: user._id,
     };
 
