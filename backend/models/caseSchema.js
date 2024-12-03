@@ -6,6 +6,26 @@ var caseSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  province: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  township: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  station: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  language: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   caseDescription: {
     type: String,
     required: true,

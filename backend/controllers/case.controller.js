@@ -13,23 +13,23 @@ export const open = async (req, res, next) => {
     }
     const {
       caseTitle,
+      province,
+      township,
+      station,
+      language,
       caseDescription,
       caseType,
-      assignedOfficer,
-      officerComments,
-      courtDetails,
-      caseDocuments,
     } = req.body;
 
     const caseData = {
       caseTitle,
+      province,
+      township,
+      station,
+      language,
       caseDescription,
       caseType,
       citizen: user._id,
-      assignedOfficer,
-      officerComments,
-      courtDetails,
-      caseDocuments,
     };
 
     openCase(caseData, Case).then((response) => {
