@@ -13,9 +13,7 @@ export function registrationTemplate() {
 export function caseNumberTemplate(caseNumber) {
     return `
       <h1>Your Case Has Been Created</h1>
-      <p>Your case has been successfully reported. Below are the case details:</p>
-      <p><strong>Case Number:</strong> ${caseNumber}</p>
-      <p>Thank you for reporting the incident.</p>
+      <p> Your case has been successfully reported. Below are the case details: <br/> <strong>Case Number:</strong> ${caseNumber} <br/> Thank you for reporting the incident.</p>
     `;
   }
 

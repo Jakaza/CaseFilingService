@@ -9,6 +9,7 @@ import {
   validateLogin,
 } from "../helpers/auth.helper.js";
 import Citizen from "../models/citizenSchema.js";
+import sendMessage from "../services/nodemailer.js";
 
 export const registerCitizen = async (req, res) => {
   const { firstname, surname, email, contact, identity, birthdate, password } =
@@ -30,7 +31,10 @@ export const registerCitizen = async (req, res) => {
       password: hashedPassword,
     };
 
-    register(citizenData, Citizen).then((response) => {
+    register(citizenData, Citizen).then( async (response)  => {
+
+      await sendMessage({first_name: firstname, last_name: surname, subject: "Account Created Successfully", email});
+
       return res
         .status(201)
         .json({ message: "User created successfully", user: response });

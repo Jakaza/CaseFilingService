@@ -390,19 +390,12 @@ const ReportCasePage = () => {
               </div>
             )}
 
-            <div className="flex justify-between mt-4">
+            <div className="flex  mt-4">
               {!isEditable ? (
                 <>
-                  {errorMessage && (
-                    <div className="text-red-500 text-center text-sm mt-2">
-                      {errorMessage}
-                      <br />
-                      <br />
-                    </div>
-                  )}
                   <button
                     onClick={handleSubmitCase}
-                    className="px-4 py-2 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-300"
+                    className="px-4 mr-3 py-2 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-300"
                   >
                     Submit Case
                   </button>

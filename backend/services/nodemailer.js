@@ -1,5 +1,5 @@
-const nodemailer = require("nodemailer");
-const {caseNumberTemplate, passwordResetTemplate} = require("./emailTemplate.js");
+import nodemailer from "nodemailer"
+import {caseNumberTemplate, passwordResetTemplate} from "./emailTemplate.js"
 
 async function sendMessage({
   first_name,
