@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from 'crypto';
+
 import {
   register,
   validateCitizenRegistration,
@@ -114,3 +116,42 @@ export const requestPasswordReset = async (req, res) => {
     res.status(500).json({ message: 'Failed to send password reset link.' });
   }
 };
+
+export const resetPassword = async (req, res) => {
+  const { token, newPassword, userType } = req.body;
+
+  try {
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const passwordResetRecord = await PasswordReset.findOne({
+      resetToken: hashedToken,
+      expiresAt: { $gt: Date.now() },
+      userType,
+    });
+
+    if (!passwordResetRecord) {
+      return res.status(400).json({ message: 'Invalid or expired reset token.' });
+    }
+
+    const userModel = userType === 'Citizen' ? Citizen : Officer;
+    const user = await userModel.findById(passwordResetRecord.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    // Delete reset token after successful password reset
+    await PasswordReset.deleteOne({ _id: passwordResetRecord._id });
+
+    res.status(200).json({ message: 'Password reset successful.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to reset password.' });
+  }
+};
+
+
