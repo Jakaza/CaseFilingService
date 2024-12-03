@@ -6,6 +6,9 @@ import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.route.js";
 import caseRoute from "./routes/case.route.js";
 import userRoute from "./routes/user.route.js";
+
+import './services/caseEmitter.js'
+
 // import testRoute from "./routes/test.route.js";
 // import userRoute from "./routes/user.route.js";
 // import chatRoute from "./routes/chat.route.js";

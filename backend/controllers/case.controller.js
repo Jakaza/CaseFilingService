@@ -2,6 +2,7 @@ import passport from "passport";
 import { openCase, requestCloseCase , generatedCaseNumber } from "../helpers/case.helper.js";
 import Case from "../models/caseSchema.js";
 import CloseReason from "../models/closeReasonSchema.js";
+import caseEmitter from '../services/caseEmitter.js';
 
 export const open = async (req, res, next) => {
   passport.authenticate("jwt", { session: false }, async (err, user, info) => {
@@ -36,6 +37,10 @@ export const open = async (req, res, next) => {
     };
 
     openCase(caseData, Case).then((response) => {
+      console.log(response);
+      
+      caseEmitter.emit('caseCreated', user.email, caseNumber);
+
       return res.status(201).json({ response: response });
     });
   })(req, res, next);
