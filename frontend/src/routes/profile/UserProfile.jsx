@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
+import { AuthContext } from "../../context/AuthContext";
+import apiRequest from "../../lib/apiRequest";
 
 function UserProfile() {
   const [userDetails, setUserDetails] = useState({
@@ -8,6 +11,9 @@ function UserProfile() {
     phone: "+27 71 234 5678",
     address: "123 Main Street, Pretoria, South Africa",
   });
+
+  const { updateUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [editing, setEditing] = useState(false);
   const [updatedDetails, setUpdatedDetails] = useState({ ...userDetails });
@@ -29,6 +35,18 @@ function UserProfile() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUpdatedDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogout = async () => {
+    try {
+      await apiRequest.post("/auth/logout");
+      updateUser(null);
+      localStorage.removeItem("user"); 
+      navigate("/login"); 
+      
+    } catch (error) {
+      navigate("/");
+    }
   };
 
   return (
@@ -138,6 +156,12 @@ function UserProfile() {
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-4"
               >
                 Edit Details
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 font-semibold mt-4 ml-4"
+              >
+                Logout
               </button>
             </div>
           )}
