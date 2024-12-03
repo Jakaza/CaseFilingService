@@ -26,6 +26,11 @@ var caseSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  caseNumber: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   caseDescription: {
     type: String,
     required: true,
