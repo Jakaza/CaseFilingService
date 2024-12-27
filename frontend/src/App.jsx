@@ -31,6 +31,10 @@ function App() {
           element:<TermsAndConditions />,
         },
         {
+          path: "/open-case",
+          element: <ReportCasePage />,
+        },
+        {
           path: "/contact",
           element:<ContactUs />,
         },
@@ -60,10 +64,6 @@ function App() {
         {
           path: "/profile",
           element:<UserProfile />,
-        },
-        {
-          path: "/open-case",
-          element: <ReportCasePage />,
         },
         {
           path: "/track-case",

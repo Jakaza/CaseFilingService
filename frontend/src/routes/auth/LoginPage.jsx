@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState , useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
-import {AuthContext} from "./../../context/AuthContext"
+import {AuthContext} from "./../../context/AuthContext";
 
 const InputField = ({
   label,
@@ -36,15 +36,24 @@ const InputField = ({
 );
 
 function LoginPage() {
+  const { currentUser } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     identity: "",
     password: "",
   });
 
   const {updateUser} = useContext(AuthContext)
-
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+
+  useEffect(()=>{
+    if(currentUser){
+      navigate("/")
+    }
+  },[])
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,7 +88,7 @@ function LoginPage() {
       try {
         const res = await apiRequest.post("/auth/login" , formData);
         updateUser(res.data)
-        
+        navigate("/");
       } catch (error) {
         console.log(error);
         

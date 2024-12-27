@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
+import apiRequest from "../../lib/apiRequest";
+import { AuthContext } from "./../../context/AuthContext";
+import { useNavigate } from "react-router";
 
 function UserProfile() {
-  const [userDetails, setUserDetails] = useState({
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "+27 71 234 5678",
-    address: "123 Main Street, Pretoria, South Africa",
-  });
+  const { currentUser, updateUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
+  const [userDetails, setUserDetails] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [updatedDetails, setUpdatedDetails] = useState({ ...userDetails });
+  const [updatedDetails, setUpdatedDetails] = useState({});
+
+  useEffect(() => {
+    if (currentUser) {
+      setUserDetails(currentUser);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (userDetails) {
+      setUpdatedDetails({ ...userDetails });
+    }
+  }, [userDetails]);
 
   const handleEdit = () => {
     setEditing(true);
@@ -31,6 +43,27 @@ function UserProfile() {
     setUpdatedDetails((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleLogout = async () => {
+    try {
+      await apiRequest.post("/auth/logout");
+      updateUser(null);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  if (!userDetails) {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
+        <main className="container mx-auto mt-8 px-4">
+          <h2 className="text-3xl font-bold text-blue-900 mb-4">Loading...</h2>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -50,8 +83,24 @@ function UserProfile() {
                 <input
                   type="text"
                   id="name"
-                  name="name"
-                  value={updatedDetails.name}
+                  name="firstname"
+                  value={updatedDetails.firstname}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="surname"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Surname
+                </label>
+                <input
+                  type="text"
+                  id="surname"
+                  name="surname"
+                  value={updatedDetails.surname}
                   onChange={handleChange}
                   className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
@@ -82,8 +131,8 @@ function UserProfile() {
                 <input
                   type="text"
                   id="phone"
-                  name="phone"
-                  value={updatedDetails.phone}
+                  name="contact"
+                  value={updatedDetails.contact}
                   onChange={handleChange}
                   className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
@@ -99,7 +148,7 @@ function UserProfile() {
                   type="text"
                   id="address"
                   name="address"
-                  value={updatedDetails.address}
+                  value={updatedDetails.address || "123 Main Street, Pretoria, South Africa"}
                   onChange={handleChange}
                   className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
@@ -122,16 +171,19 @@ function UserProfile() {
           ) : (
             <div className="space-y-4">
               <p>
-                <strong>Name:</strong> {userDetails.name}
+                <strong>Name:</strong> {userDetails.firstname} {userDetails.surname}
               </p>
               <p>
                 <strong>Email:</strong> {userDetails.email}
               </p>
               <p>
-                <strong>Phone:</strong> {userDetails.phone}
+                <strong>ID Number:</strong> {userDetails.identity}
               </p>
               <p>
-                <strong>Address:</strong> {userDetails.address}
+                <strong>Phone:</strong> {userDetails.contact}
+              </p>
+              <p>
+                <strong>Address:</strong> 123 Main Street, Pretoria, South Africa
               </p>
               <button
                 onClick={handleEdit}
@@ -171,6 +223,16 @@ function UserProfile() {
             link="/view-cases"
           />
         </section>
+
+        {/* Logout Button */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-semibold"
+          >
+            Logout
+          </button>
+        </div>
       </main>
 
       <footer className="bg-blue-900 text-white mt-12 py-6">
