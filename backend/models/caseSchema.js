@@ -44,6 +44,23 @@ var caseSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+    language: {
+      type: String,
+      required: true,
+      default: "English"
+    },
+    province: {
+      type: String,
+      required: true,
+    },
+    township: {
+      type: String,
+      required: true,
+    },
+    policeStation: {
+      type: String,
+      required: true,
+    },
   caseDocuments: [
     {
       documentUrl: {

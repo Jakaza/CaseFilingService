@@ -107,6 +107,16 @@ const ReportCasePage = () => {
     "Other",
   ];
 
+  const caseDetailsSchema = {
+    "caseTitle": "Case Report",
+    "caseDescription" : caseDetails,
+    "caseType": caseType,
+    "language": language,
+    "policeStation": selectedStation,
+    "township": selectedTownship,
+    "province": selectedProvince
+  }
+
   const { startRecording, stopRecording, mediaBlobUrl, status } =
     useReactMediaRecorder({
       audio: true,
@@ -114,6 +124,7 @@ const ReportCasePage = () => {
 
   const handleSave = () => {
     
+    // send this caseDetailsSchema to DB
   };
   const handleEdit = () => {
     setPreviewStatus( prev => {
