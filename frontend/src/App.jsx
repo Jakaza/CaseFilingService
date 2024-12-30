@@ -15,6 +15,7 @@ import UserProfile from "./routes/profile/UserProfile";
 import FileReportPage from "./routes/case/FileReportPage";
 import FileComplaintsPage from "./routes/case/FileComplaintsPage";
 import ViewCasesPage from "./routes/case/ViewCasesPage";
+import AdminLoginPage from "./routes/admin/AdminLoginPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -45,6 +46,10 @@ function App() {
         {
           path: "/login",
           element: <LoginPage />,
+        },
+        {
+          path: "/admin-login",
+          element: <  AdminLoginPage />,
         },
         {
           path: "/password-reset",

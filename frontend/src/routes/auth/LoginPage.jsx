@@ -3,6 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 import {AuthContext} from "./../../context/AuthContext";
+import Navbar from "../../components/navbar/Navbar";
 
 const InputField = ({
   label,
@@ -95,6 +96,9 @@ function LoginPage() {
   };
 
   return (
+
+    <div className="min-h-screen bg-gray-100 mainContainer">
+      <Navbar/>
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -176,10 +180,20 @@ function LoginPage() {
                   Register
                 </Link>
               </p>
+
+              <p className="text-center py-4">OR</p>
+
+              <p className="text-center">
+                <Link to="/admin-login" className="text-blue-400 ">
+                 <strong> Login As Officer / Supervisour or Admin</strong>
+                </Link>
+              </p>
+
             </div>
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }

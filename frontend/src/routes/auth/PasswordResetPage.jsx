@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Navbar from "../../components/navbar/Navbar";
 
 const InputField = ({
   label,
@@ -78,7 +79,9 @@ function PasswordResetPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 mainContainer">
+      <Navbar />
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
         Reset Password
@@ -86,7 +89,7 @@ function PasswordResetPage() {
 
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <p>Enter the email address or username you use to sign in</p>
@@ -110,11 +113,7 @@ function PasswordResetPage() {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? (
-                  <FaEye className="h-6 w-6 text-gray-700" />
-                ) : (
-                  <FaEyeSlash className="h-6 w-6 text-gray-700" />
-                )}
+    
               </button>
             </div>
             {errors.password && (
@@ -140,6 +139,7 @@ function PasswordResetPage() {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }

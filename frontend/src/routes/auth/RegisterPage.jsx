@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest.js"
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import Navbar from "../../components/navbar/Navbar.jsx";
 
 const MySwal = withReactContent(Swal);
 
@@ -121,6 +122,9 @@ function RegisterPage() {
   };
 
   return (
+
+    <div className="min-h-screen bg-gray-100 mainContainer">
+      <Navbar/>
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -251,6 +255,8 @@ function RegisterPage() {
           </form>
         </div>
       </div>
+    </div>
+
     </div>
   );
 }
