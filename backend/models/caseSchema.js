@@ -6,6 +6,10 @@ var caseSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  caseNumber : {
+    type: String,
+    required: true,
+  },
   caseDescription: {
     type: String,
     required: true,
@@ -14,7 +18,6 @@ var caseSchema = new mongoose.Schema({
   caseType: {
     type: String,
     required: true,
-    enum: ["Criminal", "Civil", "Family", "Other"],
   },
   status: {
     type: String,
