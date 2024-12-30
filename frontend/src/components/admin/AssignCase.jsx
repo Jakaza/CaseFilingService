@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaTachometerAlt , FaUserPlus , FaClipboardList , FaBars , FaSearch, FaBuilding ,FaMapMarkerAlt ,FaPhone, FaChevronDown, FaChevronRight  } from "react-icons/fa";
 
 function AssignCase() {
@@ -14,6 +14,15 @@ function AssignCase() {
     const [selectedCase, setSelectedCase] = useState('');
     const [selectedOfficer, setSelectedOfficer] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(()=>{
+      // Fetch All The Officers and Cases according to Admin Location
+      
+      // Then update 
+      // setOfficers(updatedOfficers);
+      // setCases(updatedCases);
+
+    },[])
 
     const handleAssignCase = (e) => {
         e.preventDefault();
@@ -44,7 +53,7 @@ function AssignCase() {
 
 
   return (
-    <div>
+            <div>
                 <div className="bg-white p-6 rounded-lg shadow-md mb-8">
                   <h2 className="text-2xl font-semibold mb-4 flex items-center">
                     <FaClipboardList className="mr-2" /> Assign Case
