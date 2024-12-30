@@ -7,6 +7,7 @@ import authRoute from "./routes/auth.route.js";
 import caseRoute from "./routes/case.route.js";
 import reportRoute from "./routes/report.route.js";
 import complaintRoute from "./routes/complaints.route.js";
+import officerRoute from "./routes/officer.route.js";
 // import testRoute from "./routes/test.route.js";
 // import userRoute from "./routes/user.route.js";
 // import chatRoute from "./routes/chat.route.js";
@@ -27,24 +28,28 @@ app.use(cookieParser());
 configurePassport(passport);
 app.use(passport.initialize());
 
-
-app.get("/api/users", (req , res)=>{
-  res.json([{
-    name: "Jakaza",
-    age: 12
-  },{
-    name: "Khensani",
-    age: 12
-  },{
-    name: "Nsovo",
-    age: 12
-  },])
+app.get("/api/users", (req, res) => {
+  res.json([
+    {
+      name: "Jakaza",
+      age: 12,
+    },
+    {
+      name: "Khensani",
+      age: 12,
+    },
+    {
+      name: "Nsovo",
+      age: 12,
+    },
+  ]);
 });
 
 app.use("/api/auth", authRoute);
 app.use("/api/case", caseRoute);
 app.use("/api/report", reportRoute);
 app.use("/api/complaint", complaintRoute);
+app.use("/api/officer", officerRoute);
 // app.use("/api/posts", postRoute);
 // app.use("/api/test", testRoute);
 // app.use("/api/chats", chatRoute);

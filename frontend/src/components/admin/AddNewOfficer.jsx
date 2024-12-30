@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import apiRequest from "../../lib/apiRequest";
 import {
   FaTachometerAlt,
   FaUserPlus,
@@ -27,6 +27,10 @@ function AddNewOfficer() {
     township: "",
   });
 
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const provinces = Object.keys(policeStationsData);
 
   const ranks = [
@@ -50,8 +54,43 @@ function AddNewOfficer() {
 
   const roles = ["Officer", "supervisor"];
 
-  const handleAddOfficer = (e) => {
+  function resetInputField() {
+    setNewOfficer({
+      firstname: "",
+      surname: "",
+      email: "",
+      phone: "",
+      rank: "",
+      role: "",
+      province: "",
+      township: "",
+    });
+  }
+
+  const handleAddOfficer = async (e) => {
     e.preventDefault();
+    setError(false);
+    setErrorMessage("");
+    try {
+      const res = await apiRequest.post("/officer/add", newOfficer);
+      if (res.data.user.success) {
+        setSubmitted(true);
+        resetInputField();
+      } else {
+        setError(true);
+        console.log("res", res);
+        const message =
+          res.data.user.message || "Officer was not added try again";
+        setErrorMessage(message);
+      }
+    } catch (error) {
+      console.log("error", error);
+      setError(true);
+      const message = error.response.data.response || error.data.statusText;
+      setErrorMessage(message);
+      resetInputField();
+      setSubmitted(false);
+    }
 
     console.log(newOfficer);
   };
@@ -254,6 +293,19 @@ function AddNewOfficer() {
             </div>
           )}
         </div>
+
+        {submitted && (
+          <div className="bg-green-100 text-green-700 p-3 rounded-md mb-4">
+            <strong>Thank you:</strong> New Officer has been successfully added.
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-green-100 text-red-700 p-4 rounded-md mb-6">
+            <strong>Error:</strong> {errorMessage}
+          </div>
+        )}
+
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"

@@ -1,4 +1,5 @@
 import Officer from "../models/officerSchema.js";
+import bcrypt from "bcrypt";
 import {
   hasValidationErrors,
   register,
@@ -6,19 +7,29 @@ import {
 } from "../helpers/auth.helper.js";
 
 function generatePassword() {
+  const chars =
+    "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890";
+  let password = "";
+
+  for (let i = 0; i < 8; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+
+    password += chars[randomIndex];
+  }
+
   return password;
+}
+
+function generateBadgeNumber() {
+  return `BN-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 }
 
 export const registerCitizen = async (req, res) => {
   const { firstname, surname, email, phone, rank, role, province, township } =
     req.body;
   try {
-    const validationErrors = validateCitizenRegistration(req.body);
-    if (hasValidationErrors(validationErrors)) {
-      return res.status(400).json({ errors: validationErrors });
-    }
-
     const password = generatePassword();
+    const badgeNumber = generateBadgeNumber();
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const officerData = {
@@ -30,6 +41,7 @@ export const registerCitizen = async (req, res) => {
       role,
       province,
       township,
+      badgeNumber: badgeNumber,
       password: hashedPassword,
     };
 

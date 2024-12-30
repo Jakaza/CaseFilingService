@@ -34,7 +34,6 @@ var officerSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["officer", "supervisor"],
     required: true,
     default: "general",
   },
