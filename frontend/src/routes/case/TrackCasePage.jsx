@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaSearch,
@@ -7,53 +7,125 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 import Navbar from "../../components/navbar/Navbar";
+import apiRequest from "../../lib/apiRequest";
+
+
+const Modal = ({ isOpen , onClose, children , onSend }) => {
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.keyCode === 27) onClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-5 border h-3/4 w-5/6 shadow-lg rounded-md bg-white">
+        <div className="mt-3 text-center">
+          {children}
+
+          <div className="items-center flex px-4 py-3">
+              <button
+                 onClick={onSend}
+              className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            >
+              Send
+            </button>
+         
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 function TrackCasePage() {
-  const [caseNumber, setCaseNumber] = useState("");
-  const [caseDetails, setCaseDetails] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [cases, setCases] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filteredCase, setFilteredCase] = useState(null)
+  const [reasonSchema, setReasonSchema] = useState({
+    "reason": "",
+    "additionalComments": "",
+    "caseId": ""
+  })
 
-  const sampleCases = {
-    CASE001: {
-      status: "In Progress",
-      lastUpdate: "2023-05-15",
-      description: "Theft of personal property",
-      assignedOfficer: "Officer J. Maluleke",
-      officerContact: {
-        phone: "123-456-7890",
-        email: "officer.jayMaluleka@saps.com",
-      },
-      nextStep: "Witness interview scheduled for 2024-11-20",
-    },
-    CASE002: {
-      status: "Closed",
-      lastUpdate: "2023-05-10",
-      description: "Noise complaint",
-      assignedOfficer: "Officer M. Johnson",
-      officerContact: {
-        phone: "987-654-3210",
-        email: "officer.johnson@saps.com",
-      },
-      resolution: "Warning issued to offending party",
-    },
-    CASE003: {
-      status: "Under Review",
-      lastUpdate: "2023-05-18",
-      description: "Vandalism of public property",
-      assignedOfficer: "Detective A. Williams",
-      officerContact: {
-        phone: "555-123-4567",
-        email: "detective.williams@saps.com",
-      },
-      nextStep: "Awaiting forensic analysis results",
-    },
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const viewModelToCloseCase = () => {
+    setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  useEffect(()=>{
+    async function fetchData() {
+      try {
+        const res = await apiRequest.get("/case/view-case");
+        const data = await res.data.response.cases;
+        setCases(data)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [])
+
+  const handleSearchChange = (e) =>{
+    setSearchQuery(e.target.value)
+  }
+
+  // useEffect(()=> {
+
+  // }, [filteredCase])
+
+  const handleCaseCloseRequest = async (e) =>{
+    if(reasonSchema.reason.trim() != null || reasonSchema.reason.trim() != ''){
+    try {
+      const res = await apiRequest.post("/case/close-request" , reasonSchema);
+      console.log(res);
+      setIsModalOpen(false)
+      setFilteredCase(null)
+    } catch (error) {
+      console.log(error);
+    }
+    }else{
+      console.log("Type Reason Why Closing This");
+      
+    }
+    
+
+  }
+
+  const handleSearch = (e) => {
     e.preventDefault();
-    setCaseDetails(sampleCases[caseNumber] || null);
-    setSubmitted(true);
-  };
+    const caseResult = cases.find((caseItem)=>
+      Object.keys(caseItem).includes(searchQuery)
+    )
+    if(caseResult){
+      setReasonSchema((prev)=> ({
+        ...prev,
+        caseId: caseResult[searchQuery].caseId
+      }))
+      setFilteredCase(caseResult[searchQuery]);
+      console.log(caseResult[searchQuery]);
+    }else{
+      setFilteredCase(null)
+    }
+  }
+
+
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -77,11 +149,11 @@ function TrackCasePage() {
           <h2 className="text-2xl font-semibold text-blue-900 mb-4">
             Track Your Case
           </h2>
-          <form onSubmit={handleSubmit} className="flex items-center mb-4">
+          <form onSubmit={handleSearch} className="flex items-center mb-4">
             <input
               type="text"
-              value={caseNumber}
-              onChange={(e) => setCaseNumber(e.target.value.toUpperCase())}
+              value={searchQuery}
+              onChange={handleSearchChange}
               placeholder="Enter Case Number"
               className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -93,22 +165,44 @@ function TrackCasePage() {
             </button>
           </form>
 
-          {caseDetails ? (
+          {filteredCase ? (
             <div className="bg-gray-50 p-4 rounded-md">
               <h3 className="text-xl font-semibold mb-2 flex items-center">
-                Case Status: {caseDetails.status}{" "}
-                {getStatusIcon(caseDetails.status)}
+                Case Status: {filteredCase.status}{" "}
+                {getStatusIcon(filteredCase.status)}
               </h3>
               <p>
-                <strong>Last Updated:</strong> {caseDetails.lastUpdate}
+                <strong>Case Type:</strong> {filteredCase.caseType}
               </p>
               <p>
-                <strong>Description:</strong> {caseDetails.description}
+                <strong>Open Date:</strong> {filteredCase.caseDate}
               </p>
               <p>
-                <strong>Assigned Officer:</strong> {caseDetails.assignedOfficer}
+                <strong>Address : </strong> {filteredCase.province}, {filteredCase.township}
               </p>
-              {caseDetails.nextStep && (
+              <p>
+                <strong>Police Station : </strong> {filteredCase.policeStation}
+              </p>
+              <p>
+                <strong>Description:</strong> {filteredCase.caseDescription}
+              </p>
+
+            {filteredCase.closureRequested == false ? (
+                <button
+                onClick={viewModelToCloseCase}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-4"
+              >
+                Send Request To Close This Case
+              </button>
+            ): (
+              <p>Request To Close The Case : <span className="bg-blue-600 px-2 py-1 text-white font-semibold rounded">Pending</span> </p>
+            )}
+
+   
+              <p>
+                {/* <strong>Assigned Officer:</strong> {caseDetails.assignedOfficer} */}
+              </p>
+              {/* {caseDetails.nextStep && (
                 <p>
                   <strong>Next Step:</strong> {caseDetails.nextStep}
                 </p>
@@ -117,9 +211,20 @@ function TrackCasePage() {
                 <p>
                   <strong>Resolution:</strong> {caseDetails.resolution}
                 </p>
-              )}
-              <h4 className="font-semibold mt-4">Contact Details:</h4>
-              <p>
+              )} */}
+
+              {filteredCase.isOfficerAssigned ? (
+                 <h4 className="font-semibold mt-4">Contact Details:</h4>
+              ):(
+                <>
+                 <h4 className="font-semibold mt-4">No Officer Assiged To Your Case Yet.</h4>
+                 <p>For emmigency call 10111 or Visit Your Nearest Police Station</p>
+                </>
+             
+             )}
+
+             
+              {/* <p>
                 <strong>Phone:</strong> {caseDetails.officerContact.phone}
               </p>
               <p>
@@ -130,7 +235,7 @@ function TrackCasePage() {
                 >
                   {caseDetails.officerContact.email}
                 </a>
-              </p>
+              </p> */}
             </div>
           ) : (
             submitted &&
@@ -141,6 +246,43 @@ function TrackCasePage() {
               </p>
             )
           )}
+
+        <Modal
+            isOpen={isModalOpen }
+            onClose={() => setIsModalOpen(false)}
+            onSend={handleCaseCloseRequest}
+          >
+  
+            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                  Type Your Reason To Close The Case
+              </h3>
+
+  
+              <textarea
+              rows={1}
+              value={reasonSchema.reason}
+              onChange={(e) => setReasonSchema((prev)=>({
+                ...prev,
+                reason: e.target.value
+              }))}
+              className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
+              placeholder="Why Closing The Case "
+            />
+  
+              <textarea
+              rows={4}
+              value={reasonSchema.additionalComments}
+              onChange={(e) => setReasonSchema((prev)=>({
+                ...prev,
+                additionalComments: e.target.value
+              }))}
+              className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
+              placeholder="Additional "
+            />
+  
+
+          </Modal>
+
         </section>
 
         <section className="bg-white p-6 rounded-lg shadow-md">
