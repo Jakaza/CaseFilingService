@@ -34,6 +34,16 @@ var citizenSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
+      complaintCount: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5
+      }, 
+      lastComplaintDate: {
+        type: Date,
+        default: null
+      }, 
       createdCases: [
         {
           type: mongoose.Schema.Types.ObjectId,

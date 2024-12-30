@@ -1,5 +1,7 @@
 import passport from "passport";
 import Complaint from "../models/complaintSchema.js";
+import Citizen from "../models/citizenSchema.js";
+
 
 export const open = async (req, res, next) => {
   passport.authenticate("jwt", { session: false }, async (err, user, info) => {
@@ -11,6 +13,21 @@ export const open = async (req, res, next) => {
     if (!user) {
       return res.json({ message: "Not Atheticated to open case" });
     }
+    const now = new Date();
+
+    if(user.lastComplaintDate && (now - user.lastComplaintDate) >= 14 *24*60*60*1000){
+        user.complaintCount = 0;
+    }
+
+    if(user.complaintCount >= 5){
+        return res.status(401).json({ response: "You have reached the maximum number of complaints allowed.", success: true });
+    }
+
+    user.complaintCount += 1
+    user.lastComplaintDate = now
+
+    await user.save();
+
     const {
         complaintType,
         complaintDescription,

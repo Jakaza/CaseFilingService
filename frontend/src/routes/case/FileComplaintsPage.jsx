@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
+import apiRequest from "../../lib/apiRequest";
 
 function FileComplaintsPage() {
   const [formData, setFormData] = useState({
     complaintType: "",
-    description: "",
+    complaintDescription: "",
     attachment: null,
     isAnonymous: false,
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage ] = useState('');
 
   const handleChange = (e) => {
+    setSubmitted(false);
+    setError(false)
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
@@ -23,17 +28,38 @@ function FileComplaintsPage() {
     setFormData({ ...formData, attachment: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Complaint Submitted:", formData);
-
-    setSubmitted(true);
+  function resetInputField(){
     setFormData({
       complaintType: "",
-      description: "",
+      complaintDescription: "",
       attachment: null,
       isAnonymous: false,
-    });
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await apiRequest.post("/complaint/open" , formData);
+      if(res.data.success){
+        setSubmitted(true)
+        resetInputField()
+      }else{
+        setError(true)
+        console.log("res" , res);
+        resetInputField()
+        setErrorMessage('Something Went Wrong')
+      }
+    } catch (error) {
+      console.log("error" , error);
+      setError(true)
+      const message = error.response.data.response || error.data.statusText
+      setErrorMessage(message)
+      resetInputField()
+      setSubmitted(false)
+    }
+
+
   };
 
   return (
@@ -49,6 +75,12 @@ function FileComplaintsPage() {
           {submitted && (
             <div className="bg-green-100 text-green-700 p-3 rounded-md mb-4">
               <strong>Thank you:</strong> Your complaint has been submitted successfully.
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-green-100 text-red-700 p-4 rounded-md mb-6">
+              <strong>Error:</strong> {errorMessage}
             </div>
           )}
 
@@ -82,9 +114,9 @@ function FileComplaintsPage() {
                 Description
               </label>
               <textarea
-                id="description"
-                name="description"
-                value={formData.description}
+                id="complaintDescription"
+                name="complaintDescription"
+                value={formData.complaintDescription}
                 onChange={handleChange}
                 required
                 rows="4"

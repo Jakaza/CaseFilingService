@@ -33,7 +33,11 @@ function FileReportPage() {
       const res = await apiRequest.post("/report/open" , formData);
       if(res.data.success){
         setSubmitted(true)
-        formData(null)
+        setFormData({
+          reportType: "",
+          reportDescription: "",
+          attachment: null,
+        })
       }else{
         setError(true)
         setErrorMessage('Something Went Wrong')
