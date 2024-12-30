@@ -5,6 +5,7 @@ import passport from "passport";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.route.js";
 import caseRoute from "./routes/case.route.js";
+import reportRoute from "./routes/report.route.js";
 // import testRoute from "./routes/test.route.js";
 // import userRoute from "./routes/user.route.js";
 // import chatRoute from "./routes/chat.route.js";
@@ -41,6 +42,7 @@ app.get("/api/users", (req , res)=>{
 
 app.use("/api/auth", authRoute);
 app.use("/api/case", caseRoute);
+app.use("/api/report", reportRoute);
 // app.use("/api/posts", postRoute);
 // app.use("/api/test", testRoute);
 // app.use("/api/chats", chatRoute);

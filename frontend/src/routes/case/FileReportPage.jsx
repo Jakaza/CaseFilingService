@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
+import apiRequest from "../../lib/apiRequest.js";
 
 function FileReportPage() {
   const [formData, setFormData] = useState({
     reportType: "",
-    description: "",
+    reportDescription: "",
     attachment: null,
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage ] = useState('');
 
-  const handleChange = (e) => {
+  const handleChange = (e) => {setErrorMessage
     const { name, value } = e.target;
+    setErrorMessage('')
     setFormData({ ...formData, [name]: value });
   };
 
@@ -19,13 +23,26 @@ function FileReportPage() {
     setFormData({ ...formData, attachment: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simulated submission
-    console.log("Form Data Submitted:", formData);
-    setSubmitted(true);
-    setFormData({ reportType: "", description: "", attachment: null });
+    console.log(formData);
+    
+
+    try {
+      const res = await apiRequest.post("/report/open" , formData);
+      if(res.data.success){
+        setSubmitted(true)
+        formData(null)
+      }else{
+        setError(true)
+        setErrorMessage('Something Went Wrong')
+      }
+    } catch (error) {
+      setError(true)
+      setErrorMessage('Something Went Wrong')
+      setSubmitted(false)
+    }
   };
 
   return (
@@ -43,6 +60,12 @@ function FileReportPage() {
             <div className="bg-green-100 text-green-700 p-4 rounded-md mb-6">
               <strong>Success:</strong> Your report has been submitted
               successfully!
+            </div>
+          )}
+
+        {error && (
+            <div className="bg-green-100 text-red-700 p-4 rounded-md mb-6">
+              <strong>Error:</strong> {errorMessage}
             </div>
           )}
 
@@ -83,9 +106,9 @@ function FileReportPage() {
                 Description
               </label>
               <textarea
-                id="description"
-                name="description"
-                value={formData.description}
+                id="reportDescription"
+                name="reportDescription"
+                value={formData.reportDescription}
                 onChange={handleChange}
                 required
                 rows="5"
