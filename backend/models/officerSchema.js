@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'; 
+import mongoose from "mongoose";
 
 var officerSchema = new mongoose.Schema({
   firstname: {
@@ -25,7 +25,30 @@ var officerSchema = new mongoose.Schema({
   rank: {
     type: String,
     required: true,
-    enum: ['Junior', 'Senior', 'Lead'],  
+  },
+  badgeNumber: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  role: {
+    type: String,
+    enum: ["officer", "supervisor"],
+    required: true,
+    default: "general",
+  },
+  province: {
+    type: String,
+    required: true,
+  },
+  township: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
   },
   dateJoined: {
     type: Date,
@@ -33,7 +56,6 @@ var officerSchema = new mongoose.Schema({
   },
 });
 
-
-const Officer = mongoose.model('Officer', officerSchema);
+const Officer = mongoose.model("Officer", officerSchema);
 
 export default Officer;
