@@ -71,11 +71,6 @@ function LoginPage() {
       newErrors.identity = "SA ID must be a 13-digit number";
     }
 
-    // Validate password (at least 8 characters, 1 uppercase, 1 lowercase, 1 number)
-    if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(formData.password)) {
-      newErrors.password =
-        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
