@@ -11,6 +11,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import { policeStationsData } from "./../../lib/policeStationsData.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
+import apiRequest from "../../lib/apiRequest.js";
 
 const Modal = ({ isOpen, onSave, onPreview , onClose, children , onEdit , previewStatus }) => {
   useEffect(() => {
@@ -122,9 +123,15 @@ const ReportCasePage = () => {
       audio: true,
     });
 
-  const handleSave = () => {
-    
-    // send this caseDetailsSchema to DB
+  const handleSave = async ()  => {
+
+      try {
+        const res = await apiRequest.post("/case/open" , caseDetailsSchema);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+  
   };
   const handleEdit = () => {
     setPreviewStatus( prev => {
