@@ -13,7 +13,17 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
 import apiRequest from "../../lib/apiRequest.js";
 
-const Modal = ({ isOpen, onSave, onPreview , onClose, children , onEdit , previewStatus }) => {
+const Modal = ({
+  isOpen,
+  onSave,
+  onPreview,
+  onClose,
+  children,
+  onEdit,
+  previewStatus,
+  submitted,
+  error,
+}) => {
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) onClose();
@@ -32,36 +42,45 @@ const Modal = ({ isOpen, onSave, onPreview , onClose, children , onEdit , previe
       <div className="relative top-20 mx-auto p-5 border h-3/4 w-5/6 shadow-lg rounded-md bg-white">
         <div className="mt-3 text-center">
           {children}
+          {submitted && (
+            <div className="bg-green-100 text-green-700 p-4 rounded-md mb-6 mt-3">
+              <strong>Success:</strong> Your report has been submitted
+              successfully!
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-green-100 text-red-700 p-4 rounded-md mb-6">
+              <strong>Error:</strong> Something Went Wrong Try Again
+            </div>
+          )}
 
           <div className="items-center flex px-4 py-3">
-            { !previewStatus && (
+            {!previewStatus && (
               <button
-              onClick={onPreview}
-              className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            >
-              Preview
-            </button>
+                onClick={onPreview}
+                className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              >
+                Preview
+              </button>
             )}
 
-          { previewStatus && (
-            <>
-                      <button
-              onClick={onSave}
-              className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            >
-              Save & Submit
-            </button>
-              <button
-              onClick={onEdit}
-              className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            >
-              Edit
-            </button>
-            </>
-    
+            {previewStatus && (
+              <>
+                <button
+                  onClick={onSave}
+                  className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  Save & Submit
+                </button>
+                <button
+                  onClick={onEdit}
+                  className="px-4 py-2 mr-5 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  Edit
+                </button>
+              </>
             )}
-
-
 
             <button
               onClick={onClose}
@@ -89,6 +108,9 @@ const ReportCasePage = () => {
   const [selectedStation, setSelectedStation] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const provinces = Object.keys(policeStationsData);
   const languages = [
@@ -109,42 +131,47 @@ const ReportCasePage = () => {
   ];
 
   const caseDetailsSchema = {
-    "caseTitle": "Case Report",
-    "caseDescription" : caseDetails,
-    "caseType": caseType,
-    "language": language,
-    "policeStation": selectedStation,
-    "township": selectedTownship,
-    "province": selectedProvince
-  }
+    caseTitle: "Case Report",
+    caseDescription: caseDetails,
+    caseType: caseType,
+    language: language,
+    policeStation: selectedStation,
+    township: selectedTownship,
+    province: selectedProvince,
+  };
 
   const { startRecording, stopRecording, mediaBlobUrl, status } =
     useReactMediaRecorder({
       audio: true,
     });
 
-  const handleSave = async ()  => {
+  const handleSave = async () => {
+    try {
+      const res = await apiRequest.post("/case/open", caseDetailsSchema);
+      console.log(res);
 
-      try {
-        const res = await apiRequest.post("/case/open" , caseDetailsSchema);
-        console.log(res);
-      } catch (error) {
-        console.log(error);
+      if (res.data.response.success) {
+        setSubmitted(true);
+      } else {
+        setError(true);
+        setErrorMessage("Something Went Wrong");
       }
-  
+    } catch (error) {
+      setError(true);
+      setErrorMessage("Something Went Wrong");
+      setSubmitted(false);
+    }
   };
   const handleEdit = () => {
-    setPreviewStatus( prev => {
-      return !prev
-    })
+    setPreviewStatus((prev) => {
+      return !prev;
+    });
   };
   const handlePreview = () => {
-    setPreviewStatus( prev => {
-      return !prev
-    })
+    setPreviewStatus((prev) => {
+      return !prev;
+    });
   };
-
-
 
   const handleStart = () => {
     setIsModalOpen(true);
@@ -163,7 +190,7 @@ const ReportCasePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
-     <Navbar />
+      <Navbar />
 
       <main className="container mx-auto mt-8 px-4">
         <section className="text-center mb-10">
@@ -185,8 +212,6 @@ const ReportCasePage = () => {
               }}
               className="px-4 py-5 sm:p-6"
             >
-        
-
               {/* Province Selection */}
               <div className="mb-4">
                 <label
@@ -324,48 +349,43 @@ const ReportCasePage = () => {
           <Modal
             previewStatus={previewStatus}
             onEdit={handleEdit}
-            isOpen={isModalOpen }
+            isOpen={isModalOpen}
             onSave={handleSave}
             onPreview={handlePreview}
+            submitted={submitted}
+            error={error}
             onClose={() => setIsModalOpen(false)}
           >
-
-                {previewStatus ? (
-                     <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                     Details of your case to be submited
-                   </h3>
-              
-                ) : (
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                  Type Your Case Details
-                </h3>
-                )}
-
-
-        
+            {previewStatus ? (
+              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                Details of your case to be submited
+              </h3>
+            ) : (
+              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                Type Your Case Details
+              </h3>
+            )}
 
             {previewStatus && (
-                 <textarea
+              <textarea
                 disabled
-                 rows={6}
-                 value={caseDetails}
-                 onChange={(e) => setCaseDetails(e.target.value)}
-                 className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
-                 placeholder="Please describe the incident in detail..."
-               />
-            ) 
-          }
+                rows={6}
+                value={caseDetails}
+                onChange={(e) => setCaseDetails(e.target.value)}
+                className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
+                placeholder="Please describe the incident in detail..."
+              />
+            )}
 
             {!previewStatus && (
               <textarea
-              rows={6}
-              value={caseDetails}
-              onChange={(e) => setCaseDetails(e.target.value)}
-              className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
-              placeholder="Please describe the incident in detail..."
-            />
+                rows={6}
+                value={caseDetails}
+                onChange={(e) => setCaseDetails(e.target.value)}
+                className="shadow-sm p-5 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-xl border-gray-300 rounded-md"
+                placeholder="Please describe the incident in detail..."
+              />
             )}
-
           </Modal>
         </section>
       </main>
