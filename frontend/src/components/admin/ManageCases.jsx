@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaUserPlus,
   FaClipboardList,
@@ -14,16 +14,31 @@ import {
   FaFilter,
 } from "react-icons/fa";
 import { policeStationsData } from "./../../lib/policeStationsData.js";
+import apiRequest from "../../lib/apiRequest.js";
 
 function ManageCases() {
   const [view, setView] = useState(false);
-  const [fullDetails, setFullDetails] = useState({});
+  const [fullDetails, setFullDetails] = useState({
+    firstname: "",
+    surname: "",
+    email: "",
+    contact: "",
+    caseDescription: "",
+    province: "",
+    policeStation: "",
+    language: "",
+    township: "",
+    status: "",
+    status: "",
+    caseNumber: "",
+    caseDate: "",
+  });
   const [officers, setOfficers] = useState([
     { id: 1, name: "John Doe", badge: "B001", cases: [] },
     { id: 2, name: "Jane Smith", badge: "B002", cases: [] },
   ]);
   const [selectedOfficer, setSelectedOfficer] = useState("");
-
+  const [reportedCases, setReportedCases] = useState([]);
   const [cases, setCases] = useState([
     {
       id: "C001",
@@ -55,14 +70,60 @@ function ManageCases() {
     },
   ]);
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await apiRequest.get("/case/view-cases");
+
+        const data = await res.data.response.cases;
+        console.log(res.data);
+
+        setReportedCases(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, []);
+
   const handleCloseView = (caseID = "") => {
     if (caseID != null) {
-      // Set Case Details Here and view
       setView(true);
+      // Set Case Details Here and view
+      const searchCaseByCaseNumber = reportedCases.filter(
+        (caseItem) => caseItem.caseNumber === caseID
+      );
+
+      setFullDetails({
+        firstname: searchCaseByCaseNumber[0].citizen.firstname,
+        surname: searchCaseByCaseNumber[0].citizen.surname,
+        email: searchCaseByCaseNumber[0].citizen.email,
+        contact: searchCaseByCaseNumber[0].citizen.contact,
+        caseDescription: searchCaseByCaseNumber[0].caseDescription,
+        province: searchCaseByCaseNumber[0].province,
+        township: searchCaseByCaseNumber[0].township,
+        policeStation: searchCaseByCaseNumber[0].policeStation,
+        language: searchCaseByCaseNumber[0].language,
+        caseNumber: searchCaseByCaseNumber[0].caseNumber,
+        status: searchCaseByCaseNumber[0].status,
+        caseDate: searchCaseByCaseNumber[0].caseDate,
+      });
     } else {
       setView(false);
     }
   };
+
+  function formatMongoDate(mongoDate) {
+    const date = new Date(mongoDate);
+
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  }
 
   const [searchTerm, setSearchTerm] = useState("");
   const [caseFilter, setCaseFilter] = useState("all");
@@ -93,7 +154,7 @@ function ManageCases() {
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center">
               <p>
-                Status : <strong>In Progress</strong>{" "}
+                Status : <strong>{fullDetails.status}</strong>{" "}
               </p>
             </div>
           </div>
@@ -122,12 +183,14 @@ function ManageCases() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               <tr>
-                <td>C1282UD</td>
-                <td>Joseph Hlungwane</td>
-                <td>21-Dec-2024</td>
-                <td>071 1770 423</td>
-                <td>JakazaJJ@gmail.com</td>
-                <td>Limpopo</td>
+                <td>{fullDetails.caseNumber}</td>
+                <td>
+                  {fullDetails.firstname} {fullDetails.surname}
+                </td>
+                <td>{formatMongoDate(fullDetails.caseDate)}</td>
+                <td>{fullDetails.contact}</td>
+                <td>{fullDetails.email}</td>
+                <td>{fullDetails.province}</td>
               </tr>
             </tbody>
           </table>
@@ -135,12 +198,7 @@ function ManageCases() {
           <h4 className="text-2xl mt-4 font-semibold mb-4 flex items-center">
             Statement
           </h4>
-          <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi sint
-            accusantium unde aperiam similique aliquam eveniet odit. Hic
-            pariatur doloribus quidem possimus! Earum exercitationem ipsam quia,
-            dolor quasi reprehenderit ut.
-          </p>
+          <p>{fullDetails.caseDescription}</p>
 
           <br />
           <hr />
@@ -231,16 +289,21 @@ function ManageCases() {
                   Assigned Officer
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Province
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredCases.map((case_) => (
-                <tr key={case_.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{case_.id}</td>
+              {reportedCases.map((case_, index) => (
+                <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {case_.description}
+                    {case_.caseNumber}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {case_.caseDescription.slice(1, 20)}...
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -256,10 +319,13 @@ function ManageCases() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {case_.dateReported}
+                    {formatMongoDate(case_.caseDate)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {case_.assignedOfficer || "Not Assigned"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {case_.province || "Not Assigned"}
                   </td>
                   {/* <td className="px-6 py-4 whitespace-nowrap">
                 {case_.status != "Assigned" ? (
@@ -273,7 +339,7 @@ function ManageCases() {
 
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
-                      onClick={() => handleCloseView(case_.id)}
+                      onClick={() => handleCloseView(case_.caseNumber)}
                       className="flex items-center w-full p-2 rounded text-white bg-blue-600 hover:bg-blue-700"
                     >
                       Full Details
