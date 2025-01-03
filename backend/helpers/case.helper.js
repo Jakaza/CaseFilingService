@@ -17,6 +17,24 @@ export async function openCase(data, Model) {
     };
   }
 }
+export function generatedCaseNumber() {
+  const year = new Date().getFullYear().toString().slice(-2); 
+
+  const month = String(new Date().getMonth() + 1).padStart(2, '0');
+  const day = String(new Date().getDate()).padStart(2, '0'); 
+
+  const generateUniqueCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < 5; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  };
+  const caseNumber = `${year}${month}${day}-${generateUniqueCode()}`;
+  return caseNumber;
+}
+
 
 export async function requestCloseCase(closeReasonData, Case, CloseReason) {
   try {

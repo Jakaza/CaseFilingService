@@ -28,9 +28,15 @@ function UserProfile() {
     setEditing(true);
   };
 
-  const handleSave = () => {
-    setUserDetails(updatedDetails);
-    setEditing(false);
+  const handleSave = async () => {
+    try {
+      const res = await apiRequest.post(`/user/update`, updatedDetails);
+      console.log(res);
+      setUserDetails(updatedDetails);
+      setEditing(false);
+    } catch (error) {
+      console.error("Failed to update user details:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -70,7 +76,9 @@ function UserProfile() {
       <main className="container mx-auto mt-8 px-4">
         {/* User Info */}
         <section className="bg-white p-6 rounded-lg shadow-md mb-8">
-          <h2 className="text-3xl font-bold text-blue-900 mb-4">User Profile</h2>
+          <h2 className="text-3xl font-bold text-blue-900 mb-4">
+            User Profile
+          </h2>
           {editing ? (
             <div className="space-y-4">
               <div>
@@ -78,7 +86,23 @@ function UserProfile() {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Name
+                  Firstname
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="firstname"
+                  value={updatedDetails.firstname}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Surname
                 </label>
                 <input
                   type="text"
@@ -148,7 +172,10 @@ function UserProfile() {
                   type="text"
                   id="address"
                   name="address"
-                  value={updatedDetails.address || "123 Main Street, Pretoria, South Africa"}
+                  value={
+                    updatedDetails.address ||
+                    "123 Main Street, Pretoria, South Africa"
+                  }
                   onChange={handleChange}
                   className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
@@ -171,7 +198,8 @@ function UserProfile() {
           ) : (
             <div className="space-y-4">
               <p>
-                <strong>Name:</strong> {userDetails.firstname} {userDetails.surname}
+                <strong>Name:</strong> {userDetails.firstname}{" "}
+                {userDetails.surname}
               </p>
               <p>
                 <strong>Email:</strong> {userDetails.email}
@@ -183,13 +211,20 @@ function UserProfile() {
                 <strong>Phone:</strong> {userDetails.contact}
               </p>
               <p>
-                <strong>Address:</strong> 123 Main Street, Pretoria, South Africa
+                <strong>Address:</strong> 123 Main Street, Pretoria, South
+                Africa
               </p>
               <button
                 onClick={handleEdit}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-4"
               >
                 Edit Details
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 font-semibold mt-4 ml-4"
+              >
+                Logout
               </button>
             </div>
           )}

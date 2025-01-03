@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useContext } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 import {
   FaMicrophone as Mic,
   FaKeyboard as Keyboard,
@@ -7,9 +9,7 @@ import {
 } from "react-icons/fa";
 import { useReactMediaRecorder } from "react-media-recorder";
 
-// Sample police stations data
 import { policeStationsData } from "./../../lib/policeStationsData.js";
-import { AuthContext } from "../../context/AuthContext.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
 import apiRequest from "../../lib/apiRequest.js";
 
@@ -106,7 +106,6 @@ const ReportCasePage = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedTownship, setSelectedTownship] = useState("");
   const [selectedStation, setSelectedStation] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
@@ -127,6 +126,16 @@ const ReportCasePage = () => {
     "Burglary",
     "Fraud",
     "Domestic Violence",
+    "Robbery",
+    "Rape",
+    "Hate Crime",
+    "Corruption",
+    "Drunk Driving",
+    "Murder",
+    "Child Abuse",
+    "Traffic Offense",
+    "Civil Dispute",
+    "Environmental Crime",
     "Other",
   ];
 
@@ -174,7 +183,19 @@ const ReportCasePage = () => {
   };
 
   const handleStart = () => {
-    setIsModalOpen(true);
+    if (
+      !selectedProvince ||
+      !selectedTownship ||
+      !selectedStation ||
+      !language ||
+      !caseType
+    ) {
+      setErrorMessage("Please select all required fields before proceeding.");
+      return;
+    }
+
+    setIsModalOpen(true); // Open the modal only if all fields are selected
+    setErrorMessage(""); // Clear error message if validation is successful
   };
 
   const handleProvinceChange = (e) => {
@@ -191,15 +212,16 @@ const ReportCasePage = () => {
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
       <Navbar />
+      <Navbar />
 
       <main className="container mx-auto mt-8 px-4">
         <section className="text-center mb-10">
           <h2 className="text-3xl font-bold text-blue-900 mb-4">
-            Choose Your Reporting Method and Provide Details to Get Started
+            Select the Location of Your Incident
           </h2>
           <p className="text-xl text-gray-700 mb-8">
-            Please select whether you'd like to report by typing or using voice
-            recording.
+            Choose your incident's location and the nearest police station to
+            begin reporting your case.
           </p>
         </section>
 

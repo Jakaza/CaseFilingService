@@ -6,6 +6,7 @@ import {
 } from "../helpers/case.helper.js";
 import Case from "../models/caseSchema.js";
 import CloseReason from "../models/closeReasonSchema.js";
+import sendMessage from "../services/nodemailer.js";
 
 export const open = async (req, res, next) => {
   passport.authenticate("jwt", { session: false }, async (err, user, info) => {
@@ -17,6 +18,10 @@ export const open = async (req, res, next) => {
     }
     const {
       caseTitle,
+      province,
+      township,
+      station,
+      language,
       caseDescription,
       caseType,
       language,
@@ -29,8 +34,13 @@ export const open = async (req, res, next) => {
 
     const caseData = {
       caseTitle,
+      province,
+      township,
+      station,
+      language,
       caseDescription,
       caseType,
+      caseNumber: caseNumber,
       citizen: user._id,
       language,
       policeStation,
