@@ -3,13 +3,13 @@ import "./dashboard.css";
 import { FaBars } from "react-icons/fa";
 
 import AddNewOfficer from "../../components/admin/AddNewOfficer.jsx";
-import AssignCase from "../../components/admin/AssignCase.jsx";
 import AddStation from "../../components/admin/AddStation.jsx";
 import HomeDashboard from "../../components/admin/HomeDashboard.jsx";
 import DashboardSideBar from "./DashboardSideBar.jsx";
 import ManageCases from "../../components/admin/ManageCases.jsx";
 import ManageUsers from "../../components/admin/ManageUsers.jsx";
 import OfficerManageCases from "../../components/admin/OfficerManageCases.jsx";
+import Officers from "../../components/admin/Officers.jsx";
 
 function Dashboard() {
   const [activeItem, setActiveItem] = useState("dashboard");
@@ -38,7 +38,7 @@ function Dashboard() {
         <main className="p-8">
           {activeItem === "dashboard" && <HomeDashboard />}
           {activeItem === "addOfficer" && <AddNewOfficer />}
-          {activeItem === "assignCase" && <AssignCase />}
+          {activeItem === "officers" && <Officers />}
           {activeItem === "addStation" && <AddStation />}
           {activeItem === "manageCasses" && <ManageCases />}
           {activeItem === "manageUsers" && <ManageUsers />}

@@ -36,12 +36,12 @@ function DashboardSideBar({ activeItem, setActiveItem }) {
         </li>
         <li className="mb-4">
           <button
-            onClick={() => setActiveItem("assignCase")}
+            onClick={() => setActiveItem("officers")}
             className={`flex items-center w-full p-2 rounded ${
-              activeItem === "assignCase" ? "bg-blue-600" : "hover:bg-blue-700"
+              activeItem === "officers" ? "bg-blue-600" : "hover:bg-blue-700"
             }`}
           >
-            <FaClipboardList className="mr-2" /> Assign Case
+            <FaClipboardList className="mr-2" /> List Of Officers
           </button>
         </li>
         <li className="mb-4">
