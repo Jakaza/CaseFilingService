@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { Link, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "./../../context/AuthContext";
 import Navbar from "../../components/navbar/Navbar";

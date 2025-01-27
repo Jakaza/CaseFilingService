@@ -11,25 +11,31 @@ import {
   FaChevronDown,
   FaChevronRight,
 } from "react-icons/fa";
+import apiRequest from "../../lib/apiRequest";
 
 function Officers() {
   const [cases, setCases] = useState([
     { id: "C001", description: "Theft at Main St", status: "Open" },
     { id: "C002", description: "Vandalism in Central Park", status: "Open" },
   ]);
-  const [officers, setOfficers] = useState([
-    { id: 1, name: "Jakaza Chauke", badge: "B001", cases: [] },
-    { id: 2, name: "Defence Ndzhobela", badge: "B002", cases: [] },
-  ]);
+  const [officers, setOfficers] = useState([]);
+
   const [selectedCase, setSelectedCase] = useState("");
   const [selectedOfficer, setSelectedOfficer] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Fetch All The Officers and Cases according to Admin Location
-    // Then update
-    // setOfficers(updatedOfficers);
-    // setCases(updatedCases);
+    async function fetchData() {
+      try {
+        const res = await apiRequest.get("/officer/all");
+        const data = res.data.officers;
+        console.log(res.data.officers);
+        setOfficers(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
   }, []);
 
   const handleAssignCase = (e) => {
@@ -52,8 +58,8 @@ function Officers() {
 
   const filteredOfficers = officers.filter(
     (officer) =>
-      officer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      officer.badge.toLowerCase().includes(searchTerm.toLowerCase())
+      officer.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      officer.badgeNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -77,7 +83,16 @@ function Officers() {
                 Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Surname
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Badge
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Rank
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Province
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Assigned Cases
@@ -86,11 +101,22 @@ function Officers() {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredOfficers.map((officer) => (
-              <tr key={officer.id}>
-                <td className="px-6 py-4 whitespace-nowrap">{officer.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{officer.badge}</td>
+              <tr key={officer.badgeNumber}>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {officer.cases.join(", ") || "None"}
+                  {officer.firstname}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {officer.surname}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {officer.badgeNumber}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">{officer.rank}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {officer.province}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {officer?.cases?.join(", ") || "None"}
                 </td>
               </tr>
             ))}

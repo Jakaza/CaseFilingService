@@ -63,7 +63,7 @@ function AddStation() {
 
   return (
     <div className="bg-white p-6  rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4 flex items-center">
+      {/* <h2 className="text-2xl font-semibold mb-4 flex items-center">
         <FaBuilding className="mr-2" /> Add New Police Station
       </h2>
       <form onSubmit={handleAddStation} className="space-y-4">
@@ -132,7 +132,7 @@ function AddStation() {
         >
           Add Police Station
         </button>
-      </form>
+      </form> */}
       <div className="mt-8 scrollable-section police-scroll-section">
         <h3 className="text-xl font-semibold mb-4">Existing Police Stations</h3>
         <div className="space-y-4 ">

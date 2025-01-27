@@ -57,3 +57,15 @@ export const registerCitizen = async (req, res) => {
     res.status(500).json({ message: "Failed to create user!" });
   }
 };
+
+export const getAllOfficers = async (req, res) => {
+  try {
+    const officers = await Officer.find();
+    return res
+      .status(201)
+      .json({ message: "Officers successfully fetched", officers: officers });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to create user!" });
+  }
+};

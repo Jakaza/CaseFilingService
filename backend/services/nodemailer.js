@@ -1,5 +1,5 @@
-import nodemailer from "nodemailer"
-import {caseNumberTemplate, passwordResetTemplate} from "./emailTemplate.js"
+// import nodemailer from "nodemailer"
+import { caseNumberTemplate, passwordResetTemplate } from "./emailTemplate.js";
 
 async function sendMessage({
   first_name,
@@ -8,18 +8,17 @@ async function sendMessage({
   email,
   user_role,
   subject,
-  emailType, 
+  emailType,
   caseNumber,
 }) {
   try {
-   
     let transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
-      secure: false, 
+      secure: false,
       auth: {
-        user: process.env.APP_USER, 
-        pass: process.env.APP_PASSWORD, 
+        user: process.env.APP_USER,
+        pass: process.env.APP_PASSWORD,
       },
     });
 
@@ -32,31 +31,31 @@ async function sendMessage({
         emailContent = passwordResetTemplate();
         break;
       default:
-        emailContent = "<p>Thank you for your action!</p>"; 
+        emailContent = "<p>Thank you for your action!</p>";
     }
 
     let info = await transporter.sendMail({
       sender: `${email}`,
-      from: `${email}`, 
-      to: process.env.APP_USER, 
+      from: `${email}`,
+      to: process.env.APP_USER,
       replyTo: `${email}`,
       subject: `${subject}`,
     });
 
     // Send confirmation email to user
     info = await transporter.sendMail({
-      sender: process.env.APP_USER, 
+      sender: process.env.APP_USER,
       from: process.env.APP_USER,
       to: `${email}`, // User email
       replyTo: process.env.APP_USER, // Reply address
       subject: `${subject}`,
-      html: `${emailContent}`, 
+      html: `${emailContent}`,
     });
 
-    return true; 
+    return true;
   } catch (error) {
     console.error("Error sending email:", error);
-    return false; 
+    return false;
   }
 }
 

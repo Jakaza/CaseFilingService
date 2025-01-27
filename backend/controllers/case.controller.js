@@ -18,10 +18,6 @@ export const open = async (req, res, next) => {
     }
     const {
       caseTitle,
-      province,
-      township,
-      station,
-      language,
       caseDescription,
       caseType,
       language,
@@ -34,10 +30,6 @@ export const open = async (req, res, next) => {
 
     const caseData = {
       caseTitle,
-      province,
-      township,
-      station,
-      language,
       caseDescription,
       caseType,
       caseNumber: caseNumber,
@@ -109,23 +101,13 @@ export const view = async (req, res, next) => {
 };
 
 export const viewAll = async (req, res, next) => {
-  passport.authenticate("jwt", { session: false }, async (err, user, info) => {
-    if (err) {
-      return res.status(500).json("Server Error Try Again");
-    }
-    if (!user) {
-      return res.json({ message: "Not Atheticated to open case" });
-    }
-    console.log(user);
-
-    viewCases(null, Case)
-      .then((response) => {
-        return res.status(201).json({ response: response });
-      })
-      .catch((err) => {
-        return res.status(401).json({ response: err, success: false });
-      });
-  })(req, res, next);
+  viewCases(null, Case)
+    .then((response) => {
+      return res.status(201).json({ response: response });
+    })
+    .catch((err) => {
+      return res.status(401).json({ response: err, success: false });
+    });
 };
 
 function generateCaseNumber() {

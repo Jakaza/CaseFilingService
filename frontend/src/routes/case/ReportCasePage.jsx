@@ -212,7 +212,6 @@ const ReportCasePage = () => {
   return (
     <div className="min-h-screen bg-gray-100 mainContainer">
       <Navbar />
-      <Navbar />
 
       <main className="container mx-auto mt-8 px-4">
         <section className="text-center mb-10">

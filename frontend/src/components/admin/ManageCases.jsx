@@ -33,10 +33,7 @@ function ManageCases() {
     caseNumber: "",
     caseDate: "",
   });
-  const [officers, setOfficers] = useState([
-    { id: 1, name: "John Doe", badge: "B001", cases: [] },
-    { id: 2, name: "Jane Smith", badge: "B002", cases: [] },
-  ]);
+  const [officers, setOfficers] = useState([]);
   const [selectedOfficer, setSelectedOfficer] = useState("");
   const [reportedCases, setReportedCases] = useState([]);
   const [cases, setCases] = useState([
@@ -74,10 +71,11 @@ function ManageCases() {
     async function fetchData() {
       try {
         const res = await apiRequest.get("/case/view-cases");
+        const offres = await apiRequest.get("/officer/all");
+        const offData = offres.data.officers;
 
+        setOfficers(offData);
         const data = await res.data.response.cases;
-        console.log(res.data);
-
         setReportedCases(data);
       } catch (error) {
         console.log(error);
@@ -224,8 +222,9 @@ function ManageCases() {
                 >
                   <option value="">Select an officer</option>
                   {officers.map((officer) => (
-                    <option key={officer.id} value={officer.id}>
-                      {officer.name} ({officer.badge})
+                    <option key={officer.id} value={officer.badgeNumber}>
+                      {officer.firstname} ( {officer.badgeNumber} ) -
+                      {officer.province} - Position : {officer.rank}
                     </option>
                   ))}
                 </select>
