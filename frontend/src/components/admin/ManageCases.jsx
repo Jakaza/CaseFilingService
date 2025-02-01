@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
-  FaUserPlus,
   FaClipboardList,
   FaSearch,
-  FaTachometerAlt,
-  FaBars,
-  FaBuilding,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaChevronDown,
-  FaChevronRight,
   FaEye,
   FaFilter,
 } from "react-icons/fa";
-import { policeStationsData } from "./../../lib/policeStationsData.js";
 import apiRequest from "../../lib/apiRequest.js";
+import { useNavigate } from "react-router";
 
 function ManageCases() {
   const [view, setView] = useState(false);
@@ -29,43 +21,37 @@ function ManageCases() {
     language: "",
     township: "",
     status: "",
-    status: "",
     caseNumber: "",
     caseDate: "",
+    assignedOfficer: null
   });
+
+  const [assignedOfficerFullDetails, setAssignedOfficerFullDetails] = useState({
+    firstname: "",
+    surname: "",
+    email: "",
+    contact: "",
+    badgeNumber: "",
+    role: "",
+  });
+
+
+
+
+  const [caseAndOfficerIds, setCaseAndOfficerIds] = useState({  caseId: "",
+    officerId: "",})
   const [officers, setOfficers] = useState([]);
-  const [selectedOfficer, setSelectedOfficer] = useState("");
+  const [selectedOfficer, setSelectedOfficer] = useState(null);
   const [reportedCases, setReportedCases] = useState([]);
-  const [cases, setCases] = useState([
-    {
-      id: "C001",
-      description: "Theft at Main St",
-      status: "Open",
-      dateReported: "2023-05-15",
-      assignedOfficer: null,
-    },
-    {
-      id: "C002",
-      description: "Vandalism in Central Park",
-      status: "Assigned",
-      dateReported: "2023-05-16",
-      assignedOfficer: "John Doe",
-    },
-    {
-      id: "C003",
-      description: "Domestic dispute on Elm St",
-      status: "In Progress",
-      dateReported: "2023-05-17",
-      assignedOfficer: "Jane Smith",
-    },
-    {
-      id: "C004",
-      description: "Missing person report",
-      status: "notAssigned",
-      dateReported: "2023-05-18",
-      assignedOfficer: null,
-    },
-  ]);
+  const [filteredCases, setFilteredCases] = useState([]);
+  
+ const navigate = useNavigate();
+
+ const [searchTerm, setSearchTerm] = useState("");
+ const [caseFilter, setCaseFilter] = useState("all");
+ const [loading, setLoading] = useState(false);
+   const [submitted, setSubmitted] = useState(false);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -74,15 +60,22 @@ function ManageCases() {
         const offres = await apiRequest.get("/officer/all");
         const offData = offres.data.officers;
 
+
+        // console.log(res);
+        
+
         setOfficers(offData);
         const data = await res.data.response.cases;
+
+        console.log(data);
+        
         setReportedCases(data);
       } catch (error) {
         console.log(error);
       }
     }
     fetchData();
-  }, []);
+  }, [loading]);
 
   const handleCloseView = (caseID = "") => {
     if (caseID != null) {
@@ -91,6 +84,11 @@ function ManageCases() {
       const searchCaseByCaseNumber = reportedCases.filter(
         (caseItem) => caseItem.caseNumber === caseID
       );
+
+
+      console.log("searchCaseByCaseNumber", searchCaseByCaseNumber);
+      
+
 
       setFullDetails({
         firstname: searchCaseByCaseNumber[0].citizen.firstname,
@@ -105,6 +103,8 @@ function ManageCases() {
         caseNumber: searchCaseByCaseNumber[0].caseNumber,
         status: searchCaseByCaseNumber[0].status,
         caseDate: searchCaseByCaseNumber[0].caseDate,
+        caseId: searchCaseByCaseNumber[0]._id,
+        assignedOfficer: searchCaseByCaseNumber[0].assignedOfficer
       });
     } else {
       setView(false);
@@ -123,17 +123,56 @@ function ManageCases() {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [caseFilter, setCaseFilter] = useState("all");
+  useEffect(() => {
+    let filtered = reportedCases;
+    if (caseFilter !== "all") {
+      filtered = reportedCases.filter((case_) => {
+        if (caseFilter === "assigned") return case_.assignedOfficer;
+        if (caseFilter === "notAssigned") return !case_.assignedOfficer;
+        return case_.status.toLowerCase() === caseFilter;
+      });
+    }
+    if (searchTerm) {
+      filtered = filtered.filter((case_) =>
+        case_.caseNumber.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    setFilteredCases(filtered);
+  }, [caseFilter, searchTerm, reportedCases]);
 
-  const filteredCases = cases.filter((case_) => {
-    if (caseFilter === "all") return true;
-    if (caseFilter === "open") return case_.status === "Open";
-    if (caseFilter === "assigned") return case_.status === "Assigned";
-    if (caseFilter === "notAssigned") return case_.status === "notAssigned";
-    if (caseFilter === "inProgress") return case_.status === "In Progress";
-    return true;
-  });
+
+  const assignSelectedOfficer = async (e)  =>  {
+    console.log("Clicked");
+    setLoading(true); 
+    let searchedOfficer = officers.filter((officer) => {
+      if(officer.badgeNumber == selectedOfficer) return true;
+    } )
+    searchedOfficer = searchedOfficer[0];
+    if(selectedOfficer != null){
+
+      
+      try {
+
+
+        const res = await apiRequest.post("/case/asign-officer", {
+          officerId: searchedOfficer._id,
+          caseId : fullDetails.caseId
+        });
+        setSubmitted(true);
+        setLoading(false)
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+
+
+
+
+    }
+
+  }
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       {view ? (
@@ -201,42 +240,79 @@ function ManageCases() {
           <br />
           <hr />
 
-          <>
+          { fullDetails.assignedOfficer != null ? (
+            
+            <>
             <h2 className="text-2xl font-semibold mb-4 flex items-center">
-              <FaClipboardList className="mr-2" /> Assign Case
+              <FaClipboardList className="mr-2" /> Officer Assigned - ({fullDetails.assignedOfficer.badgeNumber})
             </h2>
-            <form className="space-y-4">
-              <div>
-                <label
-                  htmlFor="officerSelect"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Select Officer
-                </label>
-                <select
-                  id="officerSelect"
-                  value={selectedOfficer}
-                  onChange={(e) => setSelectedOfficer(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                  required
-                >
-                  <option value="">Select an officer</option>
-                  {officers.map((officer) => (
-                    <option key={officer.id} value={officer.badgeNumber}>
-                      {officer.firstname} ( {officer.badgeNumber} ) -
-                      {officer.province} - Position : {officer.rank}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-              >
-                Assign Case
-              </button>
-            </form>
+              <p>Name : {fullDetails.assignedOfficer.firstname}</p>
+              <p>Surname : {fullDetails.assignedOfficer.surname}</p>
+              <p>Phone : {fullDetails.assignedOfficer.phone}</p>
+              <p>Email : {fullDetails.assignedOfficer.email}</p>
+              <p>Rank : {fullDetails.assignedOfficer.rank}</p>
+              <p>Province : {fullDetails.assignedOfficer.province}</p>
+              <p>Township : {fullDetails.assignedOfficer.township}</p>
           </>
+       
+
+                ): (
+         
+
+
+<>
+    
+<h2 className="text-2xl font-semibold mb-4 flex items-center">
+  <FaClipboardList className="mr-2" /> Assign Case
+</h2>
+<form className="space-y-4">
+  <div>
+    <label
+      htmlFor="officerSelect"
+      className="block text-sm font-medium text-gray-700"
+    >
+      Select Officer
+    </label>
+    <select
+      id="officerSelect"
+      value={selectedOfficer}
+      onChange={(e) => setSelectedOfficer(e.target.value) 
+       
+      }
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+      required
+    >
+      <option value="">Select an officer</option>
+      {officers.map((officer) => (
+        <option key={officer.id} value={officer.badgeNumber}>
+          {officer.firstname} ( {officer.badgeNumber} ) -
+          {officer.province} - Position : {officer.rank}
+        </option>
+      ))}
+    </select>
+  </div>
+
+       {submitted && (
+          <div className="bg-green-100 text-green-700 p-3 rounded-md mb-4">
+            <strong>Thank you:</strong> Officer has been successfully assigned.
+          </div>
+        )}
+
+
+<button
+  onClick={assignSelectedOfficer}
+  type="button"
+  className={`w-full text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50
+    ${submitted ? "bg-gray-500 cursor-not-allowed" : loading ? "bg-blue-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600 focus:ring-green-500"}
+  `}
+  disabled={submitted || loading}
+>
+  {submitted ? "Submitted" : loading ? "Assigning Officer... please wait" : "Assign Case"}
+</button>
+</form>
+</>
+
+                )}
         </>
       ) : (
         <>
@@ -247,27 +323,27 @@ function ManageCases() {
             <div className="flex items-center">
               <FaFilter className="text-gray-400 mr-2" />
               <select
-                value={caseFilter}
-                onChange={(e) => setCaseFilter(e.target.value)}
-                className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-              >
-                <option value="all">All Cases</option>
-                <option value="open">Open Cases</option>
-                <option value="assigned">Assigned Cases</option>
-                <option value="notAssigned">Not Assigned Cases</option>
-                <option value="inProgress">In Progress Cases</option>
-              </select>
+            value={caseFilter}
+            onChange={(e) => setCaseFilter(e.target.value)}
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          >
+            <option value="all">All Cases</option>
+            <option value="open">Open Cases</option>
+            <option value="assigned">Assigned Cases</option>
+            <option value="notAssigned">Not Assigned Cases</option>
+            <option value="inProgress">In Progress Cases</option>
+          </select>
             </div>
             <div className="flex items-center">
-              <FaSearch className="text-gray-400 mr-2" />
-              <input
-                type="text"
-                placeholder="Search cases..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-              />
-            </div>
+          <FaSearch className="text-gray-400 mr-2" />
+          <input
+            type="text"
+            placeholder="Search cases..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          />
+        </div>
           </div>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -296,13 +372,13 @@ function ManageCases() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {reportedCases.map((case_, index) => (
+              {filteredCases.map((case_, index) => (
                 <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {case_.caseNumber}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {case_.caseDescription.slice(1, 20)}...
+                    {case_.caseDescription.slice(0, 15)} ...
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -321,10 +397,10 @@ function ManageCases() {
                     {formatMongoDate(case_.caseDate)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {case_.assignedOfficer || "Not Assigned"}
+                  {case_.assignedOfficer ? "Assigned" : "Not Assigned"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {case_.province || "Not Assigned"}
+                    {case_.province }
                   </td>
                   {/* <td className="px-6 py-4 whitespace-nowrap">
                 {case_.status != "Assigned" ? (

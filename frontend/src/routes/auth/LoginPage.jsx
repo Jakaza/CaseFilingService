@@ -47,7 +47,9 @@ function LoginPage() {
   const { updateUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [serverErrors, setServerErrors] = useState("");
 
   useEffect(() => {
     if (currentUser) {

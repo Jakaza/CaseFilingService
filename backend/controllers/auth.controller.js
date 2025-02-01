@@ -9,7 +9,7 @@ import {
   validateLogin,
 } from "../helpers/auth.helper.js";
 import Citizen from "../models/citizenSchema.js";
-import sendMessage from "../services/nodemailer.js";
+import Officer from "../models/officerSchema.js";
 
 export const registerCitizen = async (req, res) => {
   const { firstname, surname, email, contact, identity, birthdate, password } =
@@ -32,12 +32,7 @@ export const registerCitizen = async (req, res) => {
     };
 
     register(citizenData, Citizen).then(async (response) => {
-      await sendMessage({
-        first_name: firstname,
-        last_name: surname,
-        subject: "Account Created Successfully",
-        email,
-      });
+
 
       return res
         .status(201)
@@ -46,6 +41,51 @@ export const registerCitizen = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to create user!" });
+  }
+};
+
+export const adminLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+
+    console.log(req.body);
+    
+
+    let user = await Officer.findOne({  email });
+
+    console.log(user);
+    
+    if (!user)
+      return res.status(400).json({ message: "Invalid email...!" });
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid)
+      return res.status(400).json({ message: "Wrong Password Entered !" });
+    console.log("user", user);
+    
+    const age = 1000 * 60 * 60 * 24 * 7;
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        isAdmin: false,
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: age }
+    );
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        // secure:true,
+        maxAge: age,
+      })
+      .status(200)
+      .json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to login!" });
   }
 };
 

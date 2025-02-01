@@ -1,62 +1,65 @@
-// import nodemailer from "nodemailer"
-import { caseNumberTemplate, passwordResetTemplate } from "./emailTemplate.js";
+import nodemailer from "nodemailer";
+import { 
+  emailTemplateRegistration, 
+  emailTemplateCaseAssignAlert,
+  emailTemplateOpenCase
+} from "./emailTemplate.js";
 
-async function sendMessage({
-  first_name,
-  last_name,
-  identification_number,
-  email,
-  user_role,
-  subject,
-  emailType,
-  caseNumber,
-}) {
+export async function sendMessage(userCredential) {
   try {
+    // Select the appropriate email template based on type
+    let emailTemplate;
+    switch (userCredential.type) {
+      case "addOfficer":
+        emailTemplate = emailTemplateRegistration(userCredential);
+        break;
+      case "assignCase":
+        emailTemplate = emailTemplateCaseAssignAlert(userCredential);
+        break;
+      case "openCase":
+        emailTemplate = emailTemplateOpenCase(userCredential)
+        break;
+      case "Register":
+        // emailTemplate = emailTemplateRegistration(userCredential);
+        break;
+      default:
+        console.error("Unknown email type:", userCredential.type);
+        return false;
+    }
+
+    // Create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
-      secure: false,
+      secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.APP_USER,
-        pass: process.env.APP_PASSWORD,
+        user: process.env.APP_USER, // email
+        pass: process.env.APP_PASSWORD, // app password
       },
     });
 
-    let emailContent = "";
-    switch (emailType) {
-      case "caseNumber":
-        emailContent = caseNumberTemplate(caseNumber);
-        break;
-      case "passwordReset":
-        emailContent = passwordResetTemplate();
-        break;
-      default:
-        emailContent = "<p>Thank you for your action!</p>";
-    }
-
+    // Send user's message
     let info = await transporter.sendMail({
-      sender: `${email}`,
-      from: `${email}`,
+      sender: `${userCredential.email}`,
+      from: `${userCredential.email}`, // sender address
       to: process.env.APP_USER,
-      replyTo: `${email}`,
-      subject: `${subject}`,
+      replyTo: `${userCredential.email}`,
+      subject: `${userCredential.subject}`, // Subject line
     });
 
-    // Send confirmation email to user
+    // Send confirmation email with the appropriate template
     info = await transporter.sendMail({
       sender: process.env.APP_USER,
-      from: process.env.APP_USER,
-      to: `${email}`, // User email
-      replyTo: process.env.APP_USER, // Reply address
-      subject: `${subject}`,
-      html: `${emailContent}`,
+      from: process.env.APP_USER, // sender address
+      to: `${userCredential.email}`,
+      replyTo: process.env.APP_USER,
+      subject: `${userCredential.subject}`, // Subject line
+      html: emailTemplate, // Use the selected email template
     });
 
-    return true;
+    return true; // Return true if email was sent successfully
   } catch (error) {
     console.error("Error sending email:", error);
-    return false;
+    return false; // Return false if an error occurred while sending email
   }
 }
-
-export default sendMessage;

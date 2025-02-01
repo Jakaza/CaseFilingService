@@ -15,7 +15,7 @@ function ClientLayout() {
 
 function RequireAuth() {
     const { currentUser } = useContext(AuthContext);
-  
+
     if (!currentUser) return <Navigate to="/login" />;
     else {
       return <Outlet />;

@@ -1,11 +1,11 @@
 import express from "express";
-import { updateUserDetails } from "../controllers/user.controller.js";
+import { getAllUsers, updateUserDetails } from "../controllers/user.controller.js";
 const router = express.Router();
 
 // CITIZEN
 // router.get("/", );
 router.post("/update" , updateUserDetails);
-// router.get("/users");
+router.get("/users", getAllUsers);
 
 
 

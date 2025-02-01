@@ -12,6 +12,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import { policeStationsData } from "./../../lib/policeStationsData.js";
 import Navbar from "../../components/navbar/Navbar.jsx";
 import apiRequest from "../../lib/apiRequest.js";
+import { useNavigate } from "react-router";
 
 const Modal = ({
   isOpen,
@@ -65,6 +66,8 @@ const Modal = ({
               </button>
             )}
 
+
+
             {previewStatus && (
               <>
                 <button
@@ -98,7 +101,7 @@ const Modal = ({
 const ReportCasePage = () => {
   // const { updateUser, currentUser } = useContext(AuthContext);
   // const navigate = useNavigate();
-
+  const navigate = useNavigate();
   const [previewStatus, setPreviewStatus] = useState(false);
   const [language, setLanguage] = useState("");
   const [caseType, setCaseType] = useState("");
@@ -161,6 +164,10 @@ const ReportCasePage = () => {
 
       if (res.data.response.success) {
         setSubmitted(true);
+        setTimeout(() => {
+          navigate("/")
+      }, 2000);
+
       } else {
         setError(true);
         setErrorMessage("Something Went Wrong");

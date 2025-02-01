@@ -74,6 +74,10 @@ function TrackCasePage() {
       try {
         const res = await apiRequest.get("/case/view-case");
         const data = await res.data.response.cases;
+
+        console.log(data);
+        
+
         setCases(data)
       } catch (error) {
         console.log(error);

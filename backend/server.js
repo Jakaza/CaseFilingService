@@ -8,19 +8,24 @@ import caseRoute from "./routes/case.route.js";
 import reportRoute from "./routes/report.route.js";
 import complaintRoute from "./routes/complaints.route.js";
 import officerRoute from "./routes/officer.route.js";
-// import testRoute from "./routes/test.route.js";
+import userRoute from "./routes/user.route.js";
+// import { seedDB } from "./config/seedDB.js";
 // import userRoute from "./routes/user.route.js";
 // import chatRoute from "./routes/chat.route.js";
 // import messageRoute from "./routes/message.route.js";
+
+
+
 
 dotenv.config();
 const app = express();
 
 import { initDb } from "./config/initDb.js";
 import { configurePassport } from "./config/passport.js";
+import { seedDB } from "./config/seedDB.js";
 
 initDb();
-
+seedDB();
 // app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -50,7 +55,7 @@ app.use("/api/case", caseRoute);
 app.use("/api/report", reportRoute);
 app.use("/api/complaint", complaintRoute);
 app.use("/api/officer", officerRoute);
-// app.use("/api/posts", postRoute);
+app.use("/api/user", userRoute);
 // app.use("/api/test", testRoute);
 // app.use("/api/chats", chatRoute);
 // app.use("/api/messages", messageRoute);

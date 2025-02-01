@@ -15,6 +15,10 @@ function Dashboard() {
   const [activeItem, setActiveItem] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  
+
+
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <div className={`md:block ${isSidebarOpen ? "block" : "hidden"}`}>

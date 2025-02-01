@@ -1,24 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import apiRequest from "../../lib/apiRequest";
 
 function HomeDashboard() {
-  const [officers, setOfficers] = useState([
-    { id: 1, name: "Jakaza Chauke", badge: "B001", cases: [] },
-    { id: 2, name: "Defence Ndzhobela", badge: "B002", cases: [] },
-  ]);
+  const [officers, setOfficers] = useState(0);
 
-  const [cases, setCases] = useState([
-    { id: "C001", description: "Theft at Main St", status: "Open" },
-    { id: "C002", description: "Vandalism in Central Park", status: "Open" },
-  ]);
+  const [cases, setCases] = useState(0);
 
-  const [stations, setStations] = useState([
-    {
-      id: 1,
-      name: "Central Police Station",
-      address: "123 Main St, City Center",
-      phone: "011-555-0101",
-    },
-  ]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await apiRequest.get("/case/view-cases");
+        const offres = await apiRequest.get("/officer/all");
+        const offData = offres.data.officers;
+        setOfficers(offData);
+        const data = await res.data.response.cases;
+
+        setCases(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, []);
+
+
 
   return (
     <div>
@@ -31,12 +37,12 @@ function HomeDashboard() {
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-2">Open Cases</h3>
           <p className="text-3xl font-bold">
-            {cases.filter((c) => c.status === "Open").length}
+            {cases.length}
           </p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-2">Police Stations</h3>
-          <p className="text-3xl font-bold">{stations.length}</p>
+          <p className="text-3xl font-bold">23</p>
         </div>
       </div>
     </div>

@@ -84,11 +84,11 @@ export async function viewCases(userId, Case) {
     console.log(userId);
 
     if (userId != null) {
-      existingCase = await Case.find({ citizen: userId });
+      existingCase = await Case.find({ citizen: userId }).populate("assignedOfficer");
     } else {
       console.log(userId);
 
-      existingCase = await Case.find().populate("citizen");
+      existingCase = await Case.find().populate("citizen").populate("assignedOfficer");
     }
 
     if (!existingCase) {
@@ -117,12 +117,12 @@ export async function viewCases(userId, Case) {
             closureRequested: item.closureRequested,
             caseDate: formatMongoDate(item.caseDate),
             isOfficerAssigned: checkIfOfficerIsAssigned(item.assignedOfficer),
+            officer : item.assignedOfficer
           },
         };
       });
     }
 
-    console.log(cases);
 
     return {
       message: "successfully fetched Case For User",

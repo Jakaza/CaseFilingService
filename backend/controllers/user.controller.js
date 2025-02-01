@@ -24,3 +24,27 @@ export const updateUserDetails = async (req, res) => {
     return res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+
+export const getAllUsers = async (req, res) => {
+
+  try {
+
+    console.log("Route Hit");
+    
+
+    const users = await Citizen.find();
+    console.log(users);
+    
+    res.status(200).json({
+      message: 'User details updated successfully',
+      users: users,
+    });
+  } catch (error) {
+    console.log(error);
+    
+    return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+

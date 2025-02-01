@@ -97,22 +97,7 @@ function UserProfile() {
                   className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Surname
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="firstname"
-                  value={updatedDetails.firstname}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+        
               <div>
                 <label
                   htmlFor="surname"

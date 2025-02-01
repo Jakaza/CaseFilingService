@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaSearch,
   FaFilter,
@@ -6,55 +6,38 @@ import {
   FaUnlock,
   FaMoneyBill,
 } from "react-icons/fa";
+import apiRequest from "../../../lib/apiRequest";
 
 function Users() {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "Alice Johnson",
-      email: "alice@example.com",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Bob Williams",
-      email: "bob@example.com",
-      status: "Blocked",
-    },
-    {
-      id: 3,
-      name: "Charlie Brown",
-      email: "charlie@example.com",
-      status: "Active",
-    },
-    {
-      id: 12,
-      name: "Bob Williams",
-      email: "bob@example.com",
-      status: "Blocked",
-    },
-    {
-      id: 13,
-      name: "Charlie Brown",
-      email: "charlie@example.com",
-      status: "Active",
-    },
-    {
-      id: 21,
-      name: "Bob Williams",
-      email: "bob@example.com",
-      status: "Blocked",
-    },
-    {
-      id: 31,
-      name: "Charlie Brown",
-      email: "charlie@example.com",
-      status: "Active",
-    },
-  ]);
+  const [users, setUsers] = useState([]);
+  const [officers, setOfficers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [userFilter, setUserFilter] = useState("all");
   const [fineAmount, setFineAmount] = useState("");
+
+  useEffect(() => {
+
+    async function fetchData() {
+      try {
+        let offres = await apiRequest.get("/officer/all");
+        let users = await apiRequest.get(`/user/users`);
+        offres = offres.data.officers;
+        users = users.data.users;
+
+        setOfficers(officers);
+        setUsers(users)
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+
+  }, []);
+
+
+
+
   const handleBlockUser = (userId) => {
     setUsers(
       users.map((user) =>
@@ -82,7 +65,7 @@ function Users() {
     })
     .filter(
       (user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -133,8 +116,8 @@ function Users() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredUsers.map((user) => (
-                <tr key={user.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
+                <tr key={user.identity}>
+                  <td className="px-6 py-4 whitespace-nowrap">{user.firstname}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -148,20 +131,15 @@ function Users() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleBlockUser(user.id)}
-                      className={`text-blue-600 hover:text-blue-900 mr-2 ${
-                        user.status === "Active" ? "bg-red-100" : "bg-green-100"
-                      } px-2 py-1 rounded`}
-                    >
-                      {user.status === "Active" ? <FaBan /> : <FaUnlock />}
-                    </button>
-                    <button
-                      onClick={() => handleFineUser(user.id)}
-                      className="text-yellow-600 hover:text-yellow-900 bg-yellow-100 px-2 py-1 rounded"
-                    >
-                      <FaMoneyBill />
-                    </button>
+                                     
+                <button
+  onClick={() => handleBlockUser(user.identity)}
+  className={`px-2 py-1 flex items-center gap-1 rounded ${
+    user.isBlocked ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+  }`}
+>
+  <FaBan /> {user.isBlocked ? "Unblock" : "Block"}
+</button>
                   </td>
                 </tr>
               ))}
@@ -169,24 +147,7 @@ function Users() {
           </table>
         </div>
       </div>
-      <div className="mt-4">
-        <h3 className="text-xl font-semibold mb-2">Issue Fine</h3>
-        <div className="flex items-center">
-          <input
-            type="number"
-            placeholder="Fine amount"
-            value={fineAmount}
-            onChange={(e) => setFineAmount(e.target.value)}
-            className="p-2 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 mr-2"
-          />
-          <button
-            onClick={() => handleFineUser(selectedUser)}
-            className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-          >
-            Issue Fine
-          </button>
-        </div>
-      </div>
+     
     </>
   );
 }

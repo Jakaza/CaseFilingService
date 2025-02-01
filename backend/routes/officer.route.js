@@ -9,4 +9,6 @@ const router = express.Router();
 router.post("/add", registerCitizen);
 router.get("/all", getAllOfficers);
 
+
+
 export default router;
